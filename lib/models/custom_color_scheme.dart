@@ -19,7 +19,7 @@ class CustomColorScheme {
 
 final lightTheme = CustomColorScheme(
   bgPrimary: Colors.white,
-  bgSecondary: const Color.fromARGB(255, 236, 236, 236),
+  bgSecondary: const Color.fromARGB(255, 255, 255, 255),
   bgInverse: Colors.black,
   textPrimary: Colors.black,
   textSecondary: const Color.fromARGB(255, 102, 102, 102),

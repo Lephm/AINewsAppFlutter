@@ -5,7 +5,7 @@ class CustomTextTheme {
   CustomTextTheme({required this.currentColorScheme});
   CustomColorScheme currentColorScheme;
   TextStyle get bodyMedium {
-    return TextStyle(color: currentColorScheme.textSecondary);
+    return TextStyle(color: currentColorScheme.textPrimary);
   }
 
   TextStyle get bodyLightMedium {

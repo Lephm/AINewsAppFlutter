@@ -30,7 +30,7 @@ class _SignInState extends ConsumerState<SignIn> {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
     return Scaffold(
-      appBar: getFormAppBar(context, currentTheme),
+      appBar: FormAppBar(),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 50),
         child: SizedBox(

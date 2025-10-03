@@ -1,5 +1,6 @@
 import 'package:centranews/models/app_info.dart';
-import 'package:centranews/utils/custom_navigator.dart';
+import 'package:centranews/utils/custom_navigator_settings.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,8 +15,9 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       title: AppInfo.title,
-      initialRoute: customNavigator.initialRoute,
-      routes: customNavigator.allRoutes,
+      initialRoute: CustomNavigatorSettings.initialRoute,
+      routes: CustomNavigatorSettings.allRoutes,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

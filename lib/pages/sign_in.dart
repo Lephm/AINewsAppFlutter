@@ -1,3 +1,4 @@
+import 'package:centranews/models/custom_color_scheme.dart';
 import 'package:centranews/models/custom_theme.dart';
 import 'package:centranews/models/language_localization.dart';
 import 'package:centranews/providers/localization_provider.dart';
@@ -28,32 +29,101 @@ class _SignInState extends ConsumerState<SignIn> {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
     return Scaffold(
-      body: SizedBox(
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 50),
+        child: SizedBox(
+          width: double.infinity,
 
-          children: [
-            Image(image: AssetImage("assets/blackcircle.png")),
-            Text(
-              localization.welcome,
-              style: currentTheme.textTheme.headlineMedium,
-            ),
-            Text(
-              localization.signInToYourAccount,
-              style: currentTheme.textTheme.bodyLightMedium,
-            ),
-            signInForm(currentTheme, context, localization),
-            rememberMeAndForgotPasswordRow(currentTheme, localization),
-          ],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+
+            children: [
+              Image(image: AssetImage("assets/blackcircle.png")),
+              Text(
+                localization.welcome,
+                style: currentTheme.textTheme.headlineMedium,
+              ),
+              Text(
+                localization.signInToYourAccount,
+                style: currentTheme.textTheme.bodyLightMedium,
+              ),
+              signInForm(currentTheme, context, localization),
+              rememberMeAndForgotPasswordRow(currentTheme, localization),
+              signInWithSocialMediaRow(localization),
+              otherSignInMethodRow(currentTheme),
+            ],
+          ),
         ),
       ),
       backgroundColor: currentTheme.currentColorScheme.bgPrimary,
     );
   }
 
-  Padding rememberMeAndForgotPasswordRow(
+  Widget otherSignInMethodRow(CustomTheme currentTheme) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 600),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 0, horizontal: 40),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              onPressed: () {},
+              icon: Image.asset("assets/google.png", width: 40, height: 40),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: Image.asset(
+                currentTheme.currentColorScheme.themeType ==
+                        ThemeBrightness.light
+                    ? "assets/darkapple.png"
+                    : "assets/apple.png",
+                width: 40,
+                height: 40,
+              ),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: Image.asset(
+                currentTheme.currentColorScheme.themeType ==
+                        ThemeBrightness.light
+                    ? "assets/twitter.png"
+                    : "assets/darktwitter.png",
+                width: 40,
+                height: 40,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget signInWithSocialMediaRow(LanguageLocalizationTexts localization) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        horizontalDivideLine(),
+        Text(localization.signInWithSocialMedia),
+        horizontalDivideLine(),
+      ],
+    );
+  }
+
+  Widget horizontalDivideLine() {
+    return Expanded(
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+        color: Colors.black,
+        width: double.infinity,
+        height: 1,
+      ),
+    );
+  }
+
+  Widget rememberMeAndForgotPasswordRow(
     CustomTheme currentTheme,
     LanguageLocalizationTexts localization,
   ) {
@@ -147,4 +217,9 @@ class _SignInState extends ConsumerState<SignIn> {
       });
     }
   }
+
+  //TODO: implement these functions with firebase
+  void signInWithGoogle() {}
+  void signInWithApple() {}
+  void signInWithX() {}
 }

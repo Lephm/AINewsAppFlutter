@@ -28,10 +28,12 @@ class UserNotifier extends Notifier<LocalUser?> {
     try {
       await _auth.signUp(email: email, password: password);
     } catch (e) {
-      _showAlertMessage(
-        context,
-        "There was something wrong when creating an account, Please try again later",
-      );
+      if (context.mounted) {
+        _showAlertMessage(
+          context,
+          "There was something wrong when creating an account, Please try again later",
+        );
+      }
     }
   }
 
@@ -43,10 +45,12 @@ class UserNotifier extends Notifier<LocalUser?> {
     try {
       await _auth.signInWithPassword(email: email, password: password);
     } catch (e) {
-      _showAlertMessage(
-        context,
-        "There was an error when you tried to log is. Please Try Again Later",
-      );
+      if (context.mounted) {
+        _showAlertMessage(
+          context,
+          "There was an error when you tried to log is. Please Try Again Later",
+        );
+      }
     }
   }
 

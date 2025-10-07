@@ -41,7 +41,7 @@ class _CustomHomeNavigationBarState
         icon: Icon(Icons.article),
         label: 'Home',
       ),
-      NavigationDestination(icon: Icon(Icons.explore), label: 'Notifications'),
+      NavigationDestination(icon: Icon(Icons.explore), label: 'Discovery'),
       NavigationDestination(
         icon: Icon(Icons.bookmark),
         selectedIcon: Icon(Icons.bookmark_border_outlined),

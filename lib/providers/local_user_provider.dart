@@ -36,6 +36,7 @@ class UserNotifier extends Notifier<LocalUser?> {
       }
     });
   }
+
   final _auth = supabase.auth;
   Route<Object?>? _progressBarRoute;
 
@@ -124,7 +125,8 @@ class UserNotifier extends Notifier<LocalUser?> {
     const webClientId =
         '459545354997-il8rqbl88n9i53k1ouua0qk2c8s3o9r5.apps.googleusercontent.com';
 
-    const iosClientId = 'my-ios.apps.googleusercontent.com';
+    const iosClientId =
+        '459545354997-4u3n1d1q1e9nhu3pp5jac0on5lcfqg5p.apps.googleusercontent.com';
 
     final GoogleSignIn googleSignIn = GoogleSignIn(
       clientId: iosClientId,
@@ -154,7 +156,6 @@ class UserNotifier extends Notifier<LocalUser?> {
       }
     }
   }
-
 
   void showProgressBar(BuildContext context) {
     var currentTheme = ref.watch(themeProvider);

@@ -1,6 +1,9 @@
 class ArticleData {
   static String parseDateToString(String dateObj) {
     var dateTime = DateTime.tryParse(dateObj);
+    if (dateTime == null) {
+      return "N/A";
+    }
     return dateTime
         .toString()
         .split(" ")[0]

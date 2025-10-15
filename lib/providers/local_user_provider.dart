@@ -195,4 +195,19 @@ class UserNotifier extends Notifier<LocalUser?> {
   void setLocalUser(LocalUser? user) {
     state = user;
   }
+
+  //TODO: fully implement signInWithTwitter
+  void signInWithTwitter(BuildContext context) async {
+    try {
+      await supabase.auth.signInWithOAuth(
+        OAuthProvider.twitter,
+        redirectTo:
+            'https://abugihnaowqdwntoervn.supabase.co/auth/v1/callback', // Supabase deep link
+      );
+    } catch (e) {
+      if (context.mounted) {
+        showAlertMessage(context, e.toString());
+      }
+    }
+  }
 }

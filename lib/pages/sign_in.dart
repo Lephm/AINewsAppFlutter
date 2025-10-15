@@ -122,7 +122,9 @@ class _SignInState extends ConsumerState<SignIn> {
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                userManager.signInWithTwitter(context);
+              },
               icon: Image.asset(
                 currentTheme.currentColorScheme.themeType ==
                         ThemeBrightness.light

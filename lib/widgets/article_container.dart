@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const double containerBorderRadius = 10;
 const double containerHorizontalLabelPadding = 5;
@@ -300,22 +301,13 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
             TextButton(
               onPressed: () async {
                 try {
-                  await Clipboard.setData(
-                    ClipboardData(text: widget.articleData.source),
-                  );
-                  if (context.mounted) {
-                    showAlertMessage(
-                      context,
-                      localization.copiedSucessfully,
-                      currentTheme,
-                    );
-                  }
+                  await launchUrl(Uri.parse(widget.articleData.source));
                 } catch (e) {
                   debugPrint(e.toString());
                 }
               },
               child: Icon(
-                Icons.copy,
+                Icons.link,
                 color: currentTheme.currentColorScheme.bgInverse,
               ),
             ),

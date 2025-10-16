@@ -22,11 +22,13 @@ class MainArticlesNotifier extends Notifier<List<ArticleData>> {
   Future<void> fetchArticlesData({
     List<String> queryParams = const [],
     required BuildContext context,
+    required int startIndex,
+    required int endIndex,
   }) async {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
     try {
-      final data = await queryArticles(queryParams);
+      final data = await queryArticles(queryParams, startIndex, endIndex);
       data.forEach((value) {
         state = [...state, ArticleData.fromJson(value)];
       });
@@ -44,13 +46,15 @@ class MainArticlesNotifier extends Notifier<List<ArticleData>> {
   Future<void> refereshArticlesData({
     List<String> queryParams = const [],
     required BuildContext context,
+    required int startIndex,
+    required int endIndex,
   }) async {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
     try {
       state = [];
 
-      final data = await queryArticles(queryParams);
+      final data = await queryArticles(queryParams, startIndex, endIndex);
       data.forEach((value) {
         state = [...state, ArticleData.fromJson(value)];
       });
@@ -67,17 +71,21 @@ class MainArticlesNotifier extends Notifier<List<ArticleData>> {
 
   Future<List<Map<String, dynamic>>> queryArticles(
     List<String> queryParams,
+    int startIndex,
+    int endIndex,
   ) async {
     if (queryParams.isEmpty) {
       return supabase
           .from('articles')
           .select()
-          .order('created_at', ascending: false);
+          .order('created_at', ascending: false)
+          .range(startIndex, endIndex);
     }
     return supabase
         .from('articles')
         .select()
         .contains('categories', queryParams)
-        .order('created_at', ascending: false);
+        .order('created_at', ascending: false)
+        .range(startIndex, endIndex);
   }
 }

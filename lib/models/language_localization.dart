@@ -1,4 +1,4 @@
-//TODO: fully implement language localization
+//TODO: fully implement language localization with categories language map
 class LanguageLocalizationTexts {
   const LanguageLocalizationTexts({
     required this.signIn,
@@ -71,9 +71,18 @@ class LanguageLocalizationTexts {
   final String highTrust;
   final String cantFindRelevantArticles;
   final String errorLoadingArticles;
+
+  //TODO implement this map
+  Map<String, String> _englishLabelTextsToLocalTextsMap() {
+    return {"Finance": "Kinh tế"};
+  }
+
+  String getLocalLanguageLabelText(String engLabel) {
+    return _englishLabelTextsToLocalTextsMap()[engLabel] ?? engLabel;
+  }
 }
 
-var engLocalization = LanguageLocalizationTexts(
+var engLocalization = const LanguageLocalizationTexts(
   signIn: "Sign In",
   signOut: "Sign Out",
   signUp: "Sign Up",

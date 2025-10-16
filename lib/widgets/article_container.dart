@@ -73,9 +73,15 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
   }
 
   Widget displayCategoriesLabels() {
+    var localization = ref.watch(localizationProvider);
     var categoryContainers = <Widget>[];
     widget.articleData.categories.forEach((value) {
-      categoryContainers.add(ArticleLabel(content: value, inversed: true));
+      categoryContainers.add(
+        ArticleLabel(
+          content: localization.getLocalLanguageLabelText(value),
+          inversed: true,
+        ),
+      );
     });
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -288,7 +294,6 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
 
   void showArticleSource() {
     var currentTheme = ref.watch(themeProvider);
-    var localization = ref.watch(localizationProvider);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

@@ -1,6 +1,7 @@
 import 'package:centranews/providers/localization_provider.dart';
 import 'package:centranews/providers/main_articles_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
+import 'package:centranews/utils/pagination.dart';
 import 'package:centranews/widgets/article_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +13,7 @@ class NewsPage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _NewsPageState();
 }
 
-class _NewsPageState extends ConsumerState<NewsPage> {
+class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
@@ -22,7 +23,6 @@ class _NewsPageState extends ConsumerState<NewsPage> {
 
   @override
   Widget build(BuildContext context) {
-    var mainArticleProvider = ref.watch(mainArticlesProvider.notifier);
     var mainArticleProviderRead = ref.watch(mainArticlesProvider);
     var currentTheme = ref.watch(themeProvider);
     _scrollController.addListener(_onScroll);
@@ -37,8 +37,7 @@ class _NewsPageState extends ConsumerState<NewsPage> {
               backgroundColor: currentTheme.currentColorScheme.bgPrimary,
               color: currentTheme.currentColorScheme.bgInverse,
               onRefresh: () async {
-                debugPrint("refresh articles data");
-                mainArticleProvider.refereshArticlesData(context: context);
+                refreshData();
               },
 
               child: ConstrainedBox(
@@ -77,22 +76,32 @@ class _NewsPageState extends ConsumerState<NewsPage> {
     super.dispose();
   }
 
-  //TODO: fully implement pagination
   void _onScroll() {
-    if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
-        !_isLoading) {
+    if (isTheEndOfThePage()) {
       debugPrint("Fetch new articles");
+      setState(() {
+        increaseCurrentPage();
+      });
+      _fetchArticlesList(context);
     }
+  }
+
+  bool isTheEndOfThePage() {
+    return (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !_isLoading);
   }
 
   Future<void> _fetchArticlesList(BuildContext context) async {
     setState(() {
       _isLoading = true;
     });
-
     var mainArticleProviders = ref.watch(mainArticlesProvider.notifier);
-    await mainArticleProviders.fetchArticlesData(context: context);
+    await mainArticleProviders.fetchArticlesData(
+      context: context,
+      startIndex: startIndex,
+      endIndex: endIndex,
+    );
     setState(() {
       _isLoading = false;
     });
@@ -123,6 +132,19 @@ class _NewsPageState extends ConsumerState<NewsPage> {
     return Text(
       localization.cantFindRelevantArticles,
       style: currentTheme.textTheme.bodyMediumBold,
+    );
+  }
+
+  void refreshData() {
+    var mainArticleProvider = ref.watch(mainArticlesProvider.notifier);
+    setState(() {
+      resetCurrentPage();
+    });
+    debugPrint("refresh articles data");
+    mainArticleProvider.refereshArticlesData(
+      context: context,
+      startIndex: startIndex,
+      endIndex: endIndex,
     );
   }
 }

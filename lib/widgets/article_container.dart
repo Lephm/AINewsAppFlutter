@@ -12,8 +12,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 const double containerBorderRadius = 10;
 const double containerHorizontalLabelPadding = 5;
-//TODO Implement base url
-String baseDomainUrl = "Domain Base Url";
 
 class ArticleContainer extends ConsumerStatefulWidget {
   const ArticleContainer({super.key, required this.articleData});
@@ -28,9 +26,6 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
   @override
   void initState() {
     super.initState();
-    if (kIsWeb) {
-      baseDomainUrl = Uri.base.origin;
-    }
   }
 
   @override

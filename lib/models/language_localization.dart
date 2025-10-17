@@ -111,7 +111,7 @@ var engLocalization = const LanguageLocalizationTexts(
   settings: "Settings",
   readMore: "Read more",
   sources: "Sources",
-  copiedSucessfully: "Copied Sucessfully",
+  copiedSucessfully: "Copied Link Sucessfully",
   lowTrust: "Low Trust",
   mediumTrust: "Medium Trust",
   highTrust: "High Trust",

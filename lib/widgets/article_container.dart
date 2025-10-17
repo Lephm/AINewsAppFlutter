@@ -1,6 +1,7 @@
 import 'package:centranews/models/article_data.dart';
 import 'package:centranews/providers/localization_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
+import 'package:centranews/utils/custom_navigator_settings.dart';
 import 'package:centranews/utils/pop_up_message.dart';
 import 'package:centranews/widgets/article_label.dart';
 import 'package:flutter/material.dart';
@@ -169,27 +170,43 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
   }
 
   Widget displayShareAndBookmarkButton() {
-    var currentTheme = ref.watch(themeProvider);
     return Container(
       alignment: Alignment.centerRight,
       child: Row(
-        children: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.share,
-              color: currentTheme.currentColorScheme.bgInverse,
-            ),
-          ),
-          SizedBox(width: 10),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.bookmarks_outlined,
-              color: currentTheme.currentColorScheme.bgInverse,
-            ),
-          ),
-        ],
+        children: [shareButton(), SizedBox(width: 10), bookmarkButton()],
+      ),
+    );
+  }
+
+  Widget shareButton() {
+    var currentTheme = ref.watch(themeProvider);
+    var localization = ref.watch(localizationProvider);
+    return IconButton(
+      onPressed: () async {
+        final articleId = widget.articleData.articleID;
+        final linkToCopied =
+            "${CustomNavigatorSettings.domainName}/#/full_article/$articleId";
+        await Clipboard.setData(ClipboardData(text: linkToCopied));
+        if (context.mounted) {
+          showAlertMessage(
+            context,
+            localization.copiedSucessfully,
+            currentTheme,
+          );
+        }
+      },
+      icon: Icon(Icons.share, color: currentTheme.currentColorScheme.bgInverse),
+    );
+  }
+
+  Widget bookmarkButton() {
+    var currentTheme = ref.watch(themeProvider);
+
+    return IconButton(
+      onPressed: () {},
+      icon: Icon(
+        Icons.bookmarks_outlined,
+        color: currentTheme.currentColorScheme.bgInverse,
       ),
     );
   }
@@ -266,30 +283,40 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
   }
 
   Widget displayHyperlinkButtonOptions() {
-    var currentTheme = ref.watch(themeProvider);
-    var localization = ref.watch(localizationProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          TextButton(
-            onPressed: () {},
-            child: Text(
-              localization.readMore,
-              style: currentTheme.textTheme.smallLabelBold,
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              showArticleSource();
-            },
-            child: Text(
-              localization.sources,
-              style: currentTheme.textTheme.smallLabelBold,
-            ),
-          ),
-        ],
+        children: [displayReadMoreButton(), displaySourceButton()],
+      ),
+    );
+  }
+
+  Widget displayReadMoreButton() {
+    var localization = ref.watch(localizationProvider);
+    var currentTheme = ref.watch(themeProvider);
+    var articleID = widget.articleData.articleID;
+    return TextButton(
+      onPressed: () {
+        Navigator.of(context).pushNamed("full_article/$articleID");
+      },
+      child: Text(
+        localization.readMore,
+        style: currentTheme.textTheme.smallLabelBold,
+      ),
+    );
+  }
+
+  Widget displaySourceButton() {
+    var localization = ref.watch(localizationProvider);
+    var currentTheme = ref.watch(themeProvider);
+    return TextButton(
+      onPressed: () {
+        showArticleSource();
+      },
+      child: Text(
+        localization.sources,
+        style: currentTheme.textTheme.smallLabelBold,
       ),
     );
   }

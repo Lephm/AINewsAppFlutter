@@ -1,5 +1,6 @@
 import 'package:centranews/models/app_info.dart';
 import 'package:centranews/utils/custom_navigator_settings.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -25,6 +26,7 @@ class MyApp extends ConsumerWidget {
       routes: CustomNavigatorSettings.allRoutes,
       debugShowCheckedModeBanner: false,
       navigatorKey: CustomNavigatorSettings.navigatorKey,
+      onGenerateRoute: CustomNavigatorSettings.onGenerateRoute,
     );
   }
 }

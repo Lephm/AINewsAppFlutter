@@ -39,7 +39,9 @@ class CustomTextTheme {
   }
 
   TextStyle get bodySmall {
-    return GoogleFonts.inter(textStyle: TextStyle());
+    return GoogleFonts.inter(
+      textStyle: TextStyle(fontSize: 15, color: currentColorScheme.textPrimary),
+    );
   }
 
   TextStyle get smallLabelBold {

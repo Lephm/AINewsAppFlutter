@@ -37,7 +37,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: HomeAppBar(headerText: currentPageHeaderText),
+        appBar: HomeAppBar(
+          headerText: currentPageHeaderText,
+          currentPageIndex: currentPageIndex,
+        ),
         drawer: HomeDrawer(),
         endDrawer: HomeEndDrawer(),
         body: IndexedStack(index: currentPageIndex, children: _pages),

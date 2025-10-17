@@ -49,9 +49,8 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
           ),
         ],
       ),
-      width: 600,
+      width: double.infinity,
       height: 300,
-
       child: Stack(
         fit: StackFit.passthrough,
         children: [
@@ -269,26 +268,29 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
   Widget displayHyperlinkButtonOptions() {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        TextButton(
-          onPressed: () {},
-          child: Text(
-            localization.readMore,
-            style: currentTheme.textTheme.smallLabelBold,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          TextButton(
+            onPressed: () {},
+            child: Text(
+              localization.readMore,
+              style: currentTheme.textTheme.smallLabelBold,
+            ),
           ),
-        ),
-        TextButton(
-          onPressed: () {
-            showArticleSource();
-          },
-          child: Text(
-            localization.sources,
-            style: currentTheme.textTheme.smallLabelBold,
+          TextButton(
+            onPressed: () {
+              showArticleSource();
+            },
+            child: Text(
+              localization.sources,
+              style: currentTheme.textTheme.smallLabelBold,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

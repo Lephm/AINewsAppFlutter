@@ -41,7 +41,7 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
               },
 
               child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 600),
+                constraints: BoxConstraints(minWidth: 600, maxWidth: 1000),
                 child: ListView.builder(
                   controller: _scrollController,
                   physics: BouncingScrollPhysics(

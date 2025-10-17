@@ -5,9 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/custom_theme.dart';
 
 class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
-  const HomeAppBar({super.key, required this.headerText});
+  const HomeAppBar({
+    super.key,
+    required this.headerText,
+    required this.currentPageIndex,
+  });
 
   final String headerText;
+  final int currentPageIndex;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,7 +22,9 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
       shape: Border(
         bottom: BorderSide(color: currentTheme.currentColorScheme.bgInverse),
       ),
-      leading: drawerIcon(context, currentTheme),
+      leading: (currentPageIndex == 0)
+          ? drawerIcon(context, currentTheme)
+          : SizedBox.shrink(),
       title: Center(
         child: Text(
           headerText,

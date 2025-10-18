@@ -1,6 +1,7 @@
 import 'package:centranews/models/article_data.dart';
 import 'package:centranews/providers/localization_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
+import 'package:centranews/utils/custom_exception.dart';
 import 'package:centranews/utils/pop_up_message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,9 +30,14 @@ class MainArticlesNotifier extends Notifier<List<ArticleData>> {
     var localization = ref.watch(localizationProvider);
     try {
       final data = await queryArticles(queryParams, startIndex, endIndex);
+      if (data.isEmpty) {
+        throw ArticleDataIsEmpty("There are no more articles");
+      }
       data.forEach((value) {
         state = [...state, ArticleData.fromJson(value)];
       });
+    } on ArticleDataIsEmpty catch (e) {
+      rethrow;
     } catch (e) {
       if (context.mounted) {
         showAlertMessage(

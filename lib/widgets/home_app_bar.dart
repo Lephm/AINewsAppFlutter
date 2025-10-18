@@ -18,6 +18,7 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var currentTheme = ref.watch(themeProvider);
     return AppBar(
+      forceMaterialTransparency: true,
       backgroundColor: currentTheme.currentColorScheme.bgPrimary,
       shape: Border(
         bottom: BorderSide(color: currentTheme.currentColorScheme.bgInverse),

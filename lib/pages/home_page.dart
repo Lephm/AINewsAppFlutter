@@ -5,6 +5,7 @@ import 'package:centranews/pages/news_page.dart';
 import 'package:centranews/providers/localization_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
 import 'package:centranews/widgets/custom_home_navigation_bar.dart';
+import 'package:centranews/widgets/custom_safe_area.dart';
 import 'package:centranews/widgets/home_app_bar.dart';
 import 'package:centranews/widgets/home_drawer.dart';
 import 'package:centranews/widgets/home_end_drawer.dart';
@@ -34,7 +35,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     if (currentPageHeaderText == "") {
       currentPageHeaderText = localization.news;
     }
-    return SafeArea(
+    return CustomSafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: HomeAppBar(

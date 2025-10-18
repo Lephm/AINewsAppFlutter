@@ -17,7 +17,7 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  bool _isLoading = false;
+  bool isLoading = false;
   bool hasFetchDataForTheFirstTime = false;
   var queryParams = <String>[];
 
@@ -25,7 +25,7 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
   Widget build(BuildContext context) {
     var mainArticles = ref.watch(mainArticlesProvider);
     var currentTheme = ref.watch(themeProvider);
-    _scrollController.addListener(_onScroll);
+    _scrollController.addListener(onScroll);
     if (!hasFetchDataForTheFirstTime) {
       fetchDataForFirstTime(context);
     }
@@ -50,10 +50,10 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
                     parent: AlwaysScrollableScrollPhysics(),
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 5),
-                  itemCount: mainArticles.length + (_isLoading ? 1 : 0),
+                  itemCount: mainArticles.length + (isLoading ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (index == mainArticles.length) {
-                      if (queryParams.isEmpty) {
+                      if (queryParams.isEmpty && isLoading) {
                         return displayCircularProgressBar();
                       }
                       return displayCantFindRelevantArticles();
@@ -75,35 +75,47 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
     super.dispose();
   }
 
-  void _onScroll() {
+  void onScroll() async {
     if (isTheEndOfThePage()) {
       debugPrint("Fetch new articles");
-      setState(() {
-        increaseCurrentPage();
-      });
-      _fetchArticlesList(context);
+      try {
+        setState(() {
+          increaseCurrentPage();
+        });
+        await fetchArticlesList(context);
+      } catch (e) {
+        debugPrint(e.toString());
+        setState(() {
+          decreaseCurrentPage();
+        });
+      }
     }
   }
 
   bool isTheEndOfThePage() {
     return (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
-        !_isLoading);
+        !isLoading);
   }
 
-  Future<void> _fetchArticlesList(BuildContext context) async {
+  Future<void> fetchArticlesList(BuildContext context) async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
     var mainArticleNotifier = ref.watch(mainArticlesProvider.notifier);
-    await mainArticleNotifier.fetchArticlesData(
-      context: context,
-      startIndex: startIndex,
-      endIndex: endIndex,
-    );
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      await mainArticleNotifier.fetchArticlesData(
+        context: context,
+        startIndex: startIndex,
+        endIndex: endIndex,
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void fetchDataForFirstTime(BuildContext context) {
@@ -112,7 +124,7 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
       setState(() {
         resetCurrentPage();
       });
-      _fetchArticlesList(context);
+      fetchArticlesList(context);
       setState(() {
         hasFetchDataForTheFirstTime = true;
       });

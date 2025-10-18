@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/theme_provider.dart';
+import '../widgets/custom_safe_area.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -28,7 +29,7 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
     if (_isLoading == true) {
       fetchArticle();
     }
-    return SafeArea(
+    return CustomSafeArea(
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: currentTheme.currentColorScheme.bgPrimary,

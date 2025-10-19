@@ -11,6 +11,7 @@ class CustomHomeNavigationBar extends ConsumerStatefulWidget {
     required this.setCurrentPageIndex,
     required this.currentPageIndex,
   });
+
   final void Function(int index) setCurrentPageIndex;
   final int currentPageIndex;
 
@@ -25,29 +26,52 @@ class _CustomHomeNavigationBarState
   Widget build(BuildContext context) {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
-    return NavigationBar(
-      onDestinationSelected: (int index) {
-        setState(() {
-          widget.setCurrentPageIndex(index);
-        });
-      },
-      selectedIndex: widget.currentPageIndex,
-      destinations: navigatorIcons(localization),
-      backgroundColor: currentTheme.currentColorScheme.bgPrimary,
-      indicatorColor: currentTheme.currentColorScheme.bgSecondary,
+    return NavigationBarTheme(
+      data: NavigationBarThemeData(
+        labelTextStyle: WidgetStateProperty.all(
+          currentTheme.textTheme.navigationLabelStyle,
+        ),
+      ),
+      child: NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            widget.setCurrentPageIndex(index);
+          });
+        },
+        selectedIndex: widget.currentPageIndex,
+        destinations: navigatorIcons(localization),
+        backgroundColor: currentTheme.currentColorScheme.bgPrimary,
+        indicatorColor: currentTheme.currentColorScheme.bgSecondary,
+      ),
     );
   }
 
-  List<Widget> navigatorIcons(LanguageLocalizationTexts  localization) {
+  List<Widget> navigatorIcons(LanguageLocalizationTexts localization) {
+    var currentTheme = ref.watch(themeProvider);
     return [
       NavigationDestination(
-        selectedIcon: Icon(Icons.article_outlined),
-        icon: Icon(Icons.article),
+        selectedIcon: Icon(
+          Icons.article_outlined,
+          color: currentTheme.currentColorScheme.bgInverse,
+        ),
+        icon: Icon(
+          Icons.article,
+          color: currentTheme.currentColorScheme.bgInverse,
+        ),
         label: localization.news,
       ),
-      NavigationDestination(icon: Icon(Icons.explore), label: localization.discovery),
       NavigationDestination(
-        icon: Icon(Icons.bookmark),
+        icon: Icon(
+          Icons.explore,
+          color: currentTheme.currentColorScheme.bgInverse,
+        ),
+        label: localization.discovery,
+      ),
+      NavigationDestination(
+        icon: Icon(
+          Icons.bookmark,
+          color: currentTheme.currentColorScheme.bgInverse,
+        ),
         selectedIcon: Icon(Icons.bookmark_border_outlined),
         label: localization.bookmarks,
       ),

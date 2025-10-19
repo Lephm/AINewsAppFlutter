@@ -1,6 +1,4 @@
 import 'package:centranews/models/custom_theme.dart';
-import 'package:centranews/models/language_localization.dart';
-import 'package:centranews/models/local_user.dart';
 import 'package:centranews/providers/local_user_provider.dart';
 import 'package:centranews/providers/localization_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
@@ -27,7 +25,6 @@ class _HomeEndDrawerState extends ConsumerState<HomeEndDrawer> {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
     var localUser = ref.watch(userProvider);
-    UserNotifier userNotifier = ref.watch(userProvider.notifier);
     if (context.mounted) {
       loadInitialLanguageSetting();
     }
@@ -51,16 +48,7 @@ class _HomeEndDrawerState extends ConsumerState<HomeEndDrawer> {
             SizedBox(height: 30),
             CustomContainer(
               child: Column(
-                children: [
-                  displaySignInOptions(
-                    context: context,
-                    currentTheme: currentTheme,
-                    localUser: localUser,
-                    localization: localization,
-                    userNotifier: userNotifier,
-                  ),
-                  changeLanguageOptions(),
-                ],
+                children: [displaySignInOptions(), changeLanguageOptions()],
               ),
             ),
           ],
@@ -69,28 +57,14 @@ class _HomeEndDrawerState extends ConsumerState<HomeEndDrawer> {
     );
   }
 
-  Widget displaySignInOptions({
-    required BuildContext context,
-    required CustomTheme currentTheme,
-    required LocalUser? localUser,
-    required UserNotifier userNotifier,
-    required LanguageLocalizationTexts localization,
-  }) {
-    return localUser == null
-        ? displaySignInButton(context, localization, currentTheme)
-        : displaySignOutButton(
-            context,
-            localization,
-            userNotifier,
-            currentTheme,
-          );
+  Widget displaySignInOptions() {
+    var localUser = ref.watch(userProvider);
+    return localUser == null ? displaySignInButton() : displaySignOutButton();
   }
 
-  Widget displaySignInButton(
-    BuildContext context,
-    LanguageLocalizationTexts localization,
-    CustomTheme currentTheme,
-  ) {
+  Widget displaySignInButton() {
+    var currentTheme = ref.watch(themeProvider);
+    var localization = ref.watch(localizationProvider);
     return TextButton(
       onPressed: () {
         Navigator.of(context).pushNamed("/sign_in");
@@ -107,12 +81,10 @@ class _HomeEndDrawerState extends ConsumerState<HomeEndDrawer> {
     );
   }
 
-  Widget displaySignOutButton(
-    BuildContext context,
-    LanguageLocalizationTexts localization,
-    UserNotifier userNotifier,
-    CustomTheme currentTheme,
-  ) {
+  Widget displaySignOutButton() {
+    var localization = ref.watch(localizationProvider);
+    var userNotifier = ref.watch(userProvider.notifier);
+    var currentTheme = ref.watch(themeProvider);
     return TextButton(
       onPressed: () async {
         try {
@@ -135,7 +107,7 @@ class _HomeEndDrawerState extends ConsumerState<HomeEndDrawer> {
             ),
             currentTheme,
           ),
-          Text(localization.signOut),
+          Text(localization.signOut, style: currentTheme.textTheme.bodyMedium),
         ],
       ),
     );
@@ -166,8 +138,20 @@ class _HomeEndDrawerState extends ConsumerState<HomeEndDrawer> {
         dropdownColor: currentTheme.currentColorScheme.bgPrimary,
         value: selectedLanguage,
         items: <DropdownMenuItem<String>>[
-          DropdownMenuItem(value: 'en', child: Text("English")),
-          DropdownMenuItem(value: 'vn', child: Text("Vietnamese")),
+          DropdownMenuItem(
+            value: 'en',
+            child: Text(
+              "English",
+              style: currentTheme.textTheme.bodyLightMedium,
+            ),
+          ),
+          DropdownMenuItem(
+            value: 'vn',
+            child: Text(
+              "Vietnamese",
+              style: currentTheme.textTheme.bodyLightMedium,
+            ),
+          ),
         ],
         onChanged: (String? newValue) {
           setState(() {

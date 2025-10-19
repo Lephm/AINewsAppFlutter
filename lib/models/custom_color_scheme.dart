@@ -12,6 +12,7 @@ class CustomColorScheme {
     required this.textInverse,
     required this.themeType,
   });
+
   ThemeBrightness themeType;
   Color bgPrimary;
   Color bgSecondary;
@@ -34,7 +35,7 @@ final lightTheme = CustomColorScheme(
 final darkTheme = CustomColorScheme(
   themeType: ThemeBrightness.dark,
   bgPrimary: Colors.black,
-  bgSecondary: const Color.fromARGB(255, 99, 99, 99),
+  bgSecondary: const Color.fromARGB(255, 237, 234, 234),
   bgInverse: Colors.white,
   textPrimary: Colors.white,
   textSecondary: const Color.fromARGB(255, 194, 194, 194),

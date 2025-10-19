@@ -79,4 +79,10 @@ class CustomTextTheme {
       textStyle: TextStyle(fontSize: 30, color: currentColorScheme.textPrimary),
     );
   }
+
+  TextStyle get navigationLabelStyle {
+    return GoogleFonts.inter(
+      textStyle: TextStyle(fontSize: 12, color: currentColorScheme.textPrimary),
+    );
+  }
 }

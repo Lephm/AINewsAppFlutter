@@ -31,16 +31,15 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
   @override
   void initState() {
     super.initState();
-    supabase.auth.onAuthStateChange.listen((data) async {
-      if (supabase.auth.currentUser != null) {
-        loadBookmarkStateStartUp(supabase.auth.currentUser!.id);
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     var currentTheme = ref.watch(themeProvider);
+    var localUser = ref.watch(userProvider);
+    if (localUser != null) {
+      loadBookmarkStateStartUp(localUser.uid);
+    }
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       decoration: BoxDecoration(
@@ -220,13 +219,13 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
       },
       icon: (isBookmarked && (localUser != null))
           ? Icon(
-        Icons.bookmark,
-        color: currentTheme.currentColorScheme.bgInverse,
-      )
+              Icons.bookmark,
+              color: currentTheme.currentColorScheme.bgInverse,
+            )
           : Icon(
-        Icons.bookmarks_outlined,
-        color: currentTheme.currentColorScheme.bgInverse,
-      ),
+              Icons.bookmarks_outlined,
+              color: currentTheme.currentColorScheme.bgInverse,
+            ),
     );
   }
 
@@ -385,35 +384,33 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
     var currentTheme = ref.watch(themeProvider);
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            backgroundColor: currentTheme.currentColorScheme.bgPrimary,
+      builder: (context) => AlertDialog(
+        backgroundColor: currentTheme.currentColorScheme.bgPrimary,
 
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                BackButton(
-                    style: ButtonStyle(alignment: Alignment(-1.0, -1.0))),
-                TextButton(
-                  onPressed: () async {
-                    try {
-                      await launchUrl(Uri.parse(widget.articleData.source));
-                    } catch (e) {
-                      debugPrint(e.toString());
-                    }
-                  },
-                  child: Icon(
-                    Icons.link,
-                    color: currentTheme.currentColorScheme.bgInverse,
-                  ),
-                ),
-              ],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            BackButton(style: ButtonStyle(alignment: Alignment(-1.0, -1.0))),
+            TextButton(
+              onPressed: () async {
+                try {
+                  await launchUrl(Uri.parse(widget.articleData.source));
+                } catch (e) {
+                  debugPrint(e.toString());
+                }
+              },
+              child: Icon(
+                Icons.link,
+                color: currentTheme.currentColorScheme.bgInverse,
+              ),
             ),
-            content: Text(
-              widget.articleData.source,
-              style: currentTheme.textTheme.bodyMedium,
-            ),
-          ),
+          ],
+        ),
+        content: Text(
+          widget.articleData.source,
+          style: currentTheme.textTheme.bodyMedium,
+        ),
+      ),
     );
   }
 }

@@ -44,7 +44,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         ),
         drawer: HomeDrawer(),
         endDrawer: HomeEndDrawer(),
-        body: IndexedStack(index: currentPageIndex, children: _pages),
+        body: _pages[currentPageIndex],
         bottomNavigationBar: CustomHomeNavigationBar(
           setCurrentPageIndex: (index) {
             setCurrentPageIndex(index);

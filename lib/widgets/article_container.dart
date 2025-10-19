@@ -235,7 +235,6 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
     });
   }
 
-  //TODO: implement this fully
   void toggleBookmark() async {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
@@ -245,10 +244,18 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
       return;
     }
     if (isBookmarked) {
+      BookmarkManager.removeArticleIdFromBookmark(
+        localUser.uid,
+        widget.articleData.articleID,
+      );
       setState(() {
         isBookmarked = false;
       });
     } else {
+      BookmarkManager.addArticleIdToBookmark(
+        localUser.uid,
+        widget.articleData.articleID,
+      );
       setState(() {
         isBookmarked = true;
       });

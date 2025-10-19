@@ -36,6 +36,7 @@ class LanguageLocalizationTexts {
     required this.cantFindRelevantArticles,
     required this.errorLoadingArticles,
     required this.youMustSignInPrompt,
+    required this.youDoNotHaveAnyBookmark,
   });
 
   final String signIn;
@@ -73,6 +74,7 @@ class LanguageLocalizationTexts {
   final String cantFindRelevantArticles;
   final String errorLoadingArticles;
   final String youMustSignInPrompt;
+  final String youDoNotHaveAnyBookmark;
 
   //TODO implement this map
   Map<String, String> _englishLabelTextsToLocalTextsMap() {
@@ -120,4 +122,5 @@ var engLocalization = const LanguageLocalizationTexts(
   cantFindRelevantArticles: "Can't Find Relevant Articles",
   errorLoadingArticles: "There was an error loading articles",
   youMustSignInPrompt: "You must sign in to use this feature",
+  youDoNotHaveAnyBookmark: "You do not have any bookmark",
 );

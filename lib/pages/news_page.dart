@@ -14,10 +14,9 @@ class NewsPage extends ConsumerStatefulWidget {
 }
 
 class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
-  final ScrollController _scrollController = ScrollController();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  bool isLoading = false;
+  final ScrollController scrollController = ScrollController();
   bool hasFetchDataForTheFirstTime = false;
   var queryParams = <String>[];
 
@@ -25,9 +24,9 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
   Widget build(BuildContext context) {
     var mainArticles = ref.watch(mainArticlesProvider);
     var currentTheme = ref.watch(themeProvider);
-    _scrollController.addListener(onScroll);
+    scrollController.addListener(onScroll);
     if (!hasFetchDataForTheFirstTime) {
-      fetchDataForFirstTime(context);
+      fetchDataForFirstTime();
     }
     return Center(
       child: Column(
@@ -45,7 +44,7 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
               child: ConstrainedBox(
                 constraints: BoxConstraints(minWidth: 600, maxWidth: 1000),
                 child: ListView.builder(
-                  controller: _scrollController,
+                  controller: scrollController,
                   physics: BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics(),
                   ),
@@ -54,7 +53,7 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
                   itemBuilder: (context, index) {
                     if (index == mainArticles.length) {
                       if (queryParams.isEmpty && isLoading) {
-                        return displayCircularProgressBar();
+                        return displayCircularProgressBar(currentTheme);
                       }
                       return displayCantFindRelevantArticles();
                     }
@@ -71,18 +70,18 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
   void onScroll() async {
-    if (isTheEndOfThePage()) {
+    if (isTheEndOfThePage(scrollController)) {
       debugPrint("Fetch new articles");
       try {
         setState(() {
           increaseCurrentPage();
         });
-        await fetchArticlesList(context);
+        await fetchMoreArticlesList(context);
       } catch (e) {
         debugPrint(e.toString());
         setState(() {
@@ -92,13 +91,8 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
     }
   }
 
-  bool isTheEndOfThePage() {
-    return (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
-        !isLoading);
-  }
-
-  Future<void> fetchArticlesList(BuildContext context) async {
+  Future<void> fetchMoreArticlesList(BuildContext context) async {
+    if (currentPage == 0) return;
     setState(() {
       isLoading = true;
     });
@@ -118,27 +112,28 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
     }
   }
 
-  void fetchDataForFirstTime(BuildContext context) {
+  void fetchDataForFirstTime() async {
+    var mainArticleNotifier = ref.watch(mainArticlesProvider.notifier);
     var mainArticles = ref.watch(mainArticlesProvider);
     if (mainArticles.isEmpty) {
       setState(() {
         resetCurrentPage();
-      });
-      fetchArticlesList(context);
-      setState(() {
         hasFetchDataForTheFirstTime = true;
       });
+      try {
+        await mainArticleNotifier.fetchArticlesData(
+          context: context,
+          startIndex: startIndex,
+          endIndex: endIndex,
+        );
+      } catch (e) {
+        debugPrint(e.toString());
+      } finally {
+        setState(() {
+          hasFetchDataForTheFirstTime = true;
+        });
+      }
     }
-  }
-
-  Widget displayCircularProgressBar() {
-    var currentTheme = ref.watch(themeProvider);
-    return Center(
-      child: CircularProgressIndicator(
-        backgroundColor: currentTheme.currentColorScheme.bgPrimary,
-        color: currentTheme.currentColorScheme.bgInverse,
-      ),
-    );
   }
 
   Widget displayCantFindRelevantArticles() {

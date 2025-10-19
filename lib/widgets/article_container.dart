@@ -41,10 +41,6 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
   @override
   Widget build(BuildContext context) {
     var currentTheme = ref.watch(themeProvider);
-    var localUser = ref.watch(userProvider);
-    if (localUser != null) {
-      loadBookmarkStateStartUp(localUser.uid);
-    }
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       decoration: BoxDecoration(

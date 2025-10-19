@@ -77,6 +77,11 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Widget displayCategoriesLabels() {
     var localization = ref.watch(localizationProvider);
     var categoryContainers = <Widget>[];

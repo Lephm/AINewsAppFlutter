@@ -65,6 +65,7 @@ class BookmarkManager {
     var articleIdDatas = await supabase
         .from('bookmarks')
         .select()
+        .eq("user_id", supabase.auth.currentUser!.id)
         .range(startIndex, endIndex);
     for (var articleIdData in articleIdDatas) {
       if (articleIdData["article_id"] != null) {

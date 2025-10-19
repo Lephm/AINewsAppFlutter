@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../providers/localization_provider.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/custom_safe_area.dart';
 
@@ -32,6 +33,7 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
     return CustomSafeArea(
       child: Scaffold(
         appBar: AppBar(
+          forceMaterialTransparency: true,
           backgroundColor: currentTheme.currentColorScheme.bgPrimary,
           leading: BackButton(
             onPressed: () {
@@ -47,38 +49,72 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
     );
   }
 
-  //TODO implement this
   Widget renderErrorPage() {
-    return Placeholder();
+    var currentTheme = ref.watch(themeProvider);
+    var localization = ref.watch(localizationProvider);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Column(
+          children: [
+            Text(
+              localization.cantFindRelevantArticles,
+              style: currentTheme.textTheme.bodyMediumBold,
+            ),
+            BackButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed("/");
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget renderArticle() {
     var currentTheme = ref.watch(themeProvider);
+    var localization = ref.watch(localizationProvider);
     return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-        child: Column(
-          children: [
-            Text(
-              articleData!.articleTitle,
-              style: currentTheme.textTheme.headlineMedium,
-            ),
-            Text(
-              articleData!.articleSummary,
-              style: currentTheme.textTheme.bodySmall,
-            ),
-            Image.network(
-              articleData!.thumbnailUrl,
-              width: double.infinity,
-              height: 150,
-              fit: BoxFit.cover,
-            ),
-            Text(
-              articleData!.articleContent,
-              style: currentTheme.textTheme.bodySmall,
-            ),
-            displayGoToSourceButton(),
-          ],
+      child: Center(
+        child: Container(
+          constraints: BoxConstraints(maxWidth: 800),
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: Column(
+            spacing: 10,
+            children: [
+              Text(
+                articleData!.articleTitle,
+                style: currentTheme.textTheme.headlineMedium,
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  articleData!.articleSummary,
+                  style: currentTheme.textTheme.bodySmall,
+                ),
+              ),
+              Image.network(
+                articleData!.thumbnailUrl,
+                width: double.infinity,
+                height: 300,
+                fit: BoxFit.cover,
+              ),
+              Text(
+                articleData!.articleContent,
+                style: currentTheme.textTheme.bodySmall,
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  localization.sources,
+                  style: currentTheme.textTheme.bodyBold,
+                ),
+              ),
+              displayGoToSourceButton(),
+            ],
+          ),
         ),
       ),
     );

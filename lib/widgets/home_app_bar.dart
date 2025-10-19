@@ -20,9 +20,6 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
     return AppBar(
       forceMaterialTransparency: true,
       backgroundColor: currentTheme.currentColorScheme.bgPrimary,
-      shape: Border(
-        bottom: BorderSide(color: currentTheme.currentColorScheme.bgInverse),
-      ),
       leading: (currentPageIndex == 0)
           ? drawerIcon(context, currentTheme)
           : SizedBox.shrink(),
@@ -40,7 +37,7 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
               onPressed: () {
                 Scaffold.of(context).openEndDrawer();
               },
-              icon: Icon(Icons.account_circle),
+              icon: Icon(Icons.account_circle, size: 30),
             ),
           ],
         ),

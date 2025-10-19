@@ -11,4 +11,13 @@ class LocalizationNotifier extends Notifier<LanguageLocalizationTexts> {
   LanguageLocalizationTexts build() {
     return engLocalization;
   }
+
+  //TODO implement this
+  void changeLanguageToVietnamese() {
+    state = vietLocalization;
+  }
+
+  void changeLanguageToEnglish() {
+    state = engLocalization;
+  }
 }

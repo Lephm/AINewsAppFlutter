@@ -39,6 +39,7 @@ dependencies:
   google_sign_in: ^6.1.0
   google_fonts: ^6.3.2
   url_launcher: ^6.3.2
+  localstorage: ^6.0.0
 
 dev_dependencies:
   flutter_test:

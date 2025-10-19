@@ -8,6 +8,7 @@ import 'package:centranews/widgets/custom_container.dart';
 import 'package:centranews/widgets/home_button_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localstorage/localstorage.dart';
 
 import '../utils/pop_up_message.dart';
 
@@ -19,8 +20,11 @@ class HomeEndDrawer extends ConsumerStatefulWidget {
 }
 
 class _HomeEndDrawerState extends ConsumerState<HomeEndDrawer> {
+  String? selectedLanguage;
+
   @override
   Widget build(BuildContext context) {
+    loadInitialLanguageSetting();
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
     var localUser = ref.watch(userProvider);
@@ -53,6 +57,7 @@ class _HomeEndDrawerState extends ConsumerState<HomeEndDrawer> {
                     localization: localization,
                     userNotifier: userNotifier,
                   ),
+                  changeLanguageOptions(),
                 ],
               ),
             ),
@@ -139,6 +144,44 @@ class _HomeEndDrawerState extends ConsumerState<HomeEndDrawer> {
       radius: 15,
       backgroundColor: currentTheme.currentColorScheme.bgSecondary,
       child: child,
+    );
+  }
+
+  void loadInitialLanguageSetting() {
+    if (selectedLanguage == null) {
+      var localLangPreference = localStorage.getItem("language");
+      setState(() {
+        selectedLanguage = localLangPreference ?? "en";
+      });
+    }
+  }
+
+  Widget changeLanguageOptions() {
+    var currentTheme = ref.watch(themeProvider);
+    var localizationManager = ref.watch(localizationProvider.notifier);
+    return DropdownButtonHideUnderline(
+      child: DropdownButton<String>(
+        dropdownColor: currentTheme.currentColorScheme.bgPrimary,
+        value: selectedLanguage,
+        items: <DropdownMenuItem<String>>[
+          DropdownMenuItem(value: 'en', child: Text("English")),
+          DropdownMenuItem(value: 'vn', child: Text("Vietnamese")),
+        ],
+        onChanged: (String? newValue) {
+          if (newValue == "en") {
+            localizationManager.changeLanguageToEnglish();
+            localStorage.setItem('language', "en");
+          }
+          if (newValue == "vn") {
+            localizationManager.changeLanguageToVietnamese();
+            localStorage.setItem('language', "vn");
+          }
+          setState(() {
+            selectedLanguage = newValue;
+          });
+        },
+        elevation: 16,
+      ),
     );
   }
 }

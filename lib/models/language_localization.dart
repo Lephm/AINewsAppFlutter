@@ -124,3 +124,6 @@ var engLocalization = const LanguageLocalizationTexts(
   youMustSignInPrompt: "You must sign in to use this feature",
   youDoNotHaveAnyBookmark: "You do not have any bookmark",
 );
+
+//TODO: There is a bug where u change language, the news page cant re-render immediately
+var vietLocalization = engLocalization;

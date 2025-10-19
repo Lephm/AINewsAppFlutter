@@ -30,7 +30,11 @@ class _SignInState extends ConsumerState<SignIn> {
     var localization = ref.watch(localizationProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: FormAppBar(),
+      appBar: FormAppBar(
+        onBackButtonPressed: () {
+          Navigator.of(context).pushNamed("/");
+        },
+      ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 50),
         child: SizedBox(

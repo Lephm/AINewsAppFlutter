@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FormAppBar extends ConsumerWidget implements PreferredSizeWidget {
-  const FormAppBar({super.key});
+  const FormAppBar({super.key, this.onBackButtonPressed});
+
+  final void Function()? onBackButtonPressed;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -12,8 +14,12 @@ class FormAppBar extends ConsumerWidget implements PreferredSizeWidget {
       backgroundColor: currentTheme.currentColorScheme.bgPrimary,
       leading: BackButton(
         onPressed: () {
-          if (Navigator.of(context).canPop()) {
-            Navigator.of(context).pop();
+          if (onBackButtonPressed == null) {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
+          } else {
+            onBackButtonPressed!();
           }
         },
         color: currentTheme.currentColorScheme.bgInverse,

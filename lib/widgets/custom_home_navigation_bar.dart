@@ -28,11 +28,8 @@ class _CustomHomeNavigationBarState
     var localization = ref.watch(localizationProvider);
     return SafeArea(
       child: Container(
-        constraints: BoxConstraints(maxHeight: 45),
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-        margin: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
         decoration: BoxDecoration(
-          color: currentTheme.currentColorScheme.bgSecondary.withAlpha(150),
+          color: currentTheme.currentColorScheme.bgPrimary,
           borderRadius: BorderRadius.all(Radius.circular(30)),
         ),
         child: NavigationBarTheme(

@@ -55,7 +55,7 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
           ),
         ],
       ),
-      width: double.infinity,
+      width: 600,
       height: 300,
       child: Stack(
         fit: StackFit.passthrough,

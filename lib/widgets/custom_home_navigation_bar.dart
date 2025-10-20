@@ -26,22 +26,34 @@ class _CustomHomeNavigationBarState
   Widget build(BuildContext context) {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
-    return NavigationBarTheme(
-      data: NavigationBarThemeData(
-        labelTextStyle: WidgetStateProperty.all(
-          currentTheme.textTheme.navigationLabelStyle,
+    return SafeArea(
+      child: Container(
+        constraints: BoxConstraints(maxHeight: 45),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+        margin: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        decoration: BoxDecoration(
+          color: currentTheme.currentColorScheme.bgSecondary.withAlpha(150),
+          borderRadius: BorderRadius.all(Radius.circular(30)),
         ),
-      ),
-      child: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            widget.setCurrentPageIndex(index);
-          });
-        },
-        selectedIndex: widget.currentPageIndex,
-        destinations: navigatorIcons(localization),
-        backgroundColor: currentTheme.currentColorScheme.bgPrimary,
-        indicatorColor: currentTheme.currentColorScheme.bgSecondary,
+        child: NavigationBarTheme(
+          data: NavigationBarThemeData(
+            labelTextStyle: WidgetStateProperty.all(
+              currentTheme.textTheme.navigationLabelStyle,
+            ),
+          ),
+          child: NavigationBar(
+            onDestinationSelected: (int index) {
+              setState(() {
+                widget.setCurrentPageIndex(index);
+              });
+            },
+            selectedIndex: widget.currentPageIndex,
+            destinations: navigatorIcons(localization),
+            backgroundColor: Colors.transparent,
+            indicatorColor: currentTheme.currentColorScheme.bgSecondary,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+          ),
+        ),
       ),
     );
   }
@@ -51,11 +63,11 @@ class _CustomHomeNavigationBarState
     return [
       NavigationDestination(
         selectedIcon: Icon(
-          Icons.article_outlined,
+          Icons.article,
           color: currentTheme.currentColorScheme.bgInverse,
         ),
         icon: Icon(
-          Icons.article,
+          Icons.article_outlined,
           color: currentTheme.currentColorScheme.bgInverse,
         ),
         label: localization.news,
@@ -69,10 +81,13 @@ class _CustomHomeNavigationBarState
       ),
       NavigationDestination(
         icon: Icon(
-          Icons.bookmark,
+          Icons.bookmark_border,
           color: currentTheme.currentColorScheme.bgInverse,
         ),
-        selectedIcon: Icon(Icons.bookmark_border_outlined),
+        selectedIcon: Icon(
+          Icons.bookmarks,
+          color: currentTheme.currentColorScheme.bgInverse,
+        ),
         label: localization.bookmarks,
       ),
     ];

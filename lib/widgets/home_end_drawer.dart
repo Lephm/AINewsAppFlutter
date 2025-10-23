@@ -160,12 +160,12 @@ class _HomeEndDrawerState extends ConsumerState<HomeEndDrawer> {
           if (newValue == "en") {
             localStorage.setItem('language', "en");
             localizationManager.changeLanguageToEnglish();
-            Navigator.of(context).pushReplacementNamed("/");
+            Navigator.of(context).pushNamed("/");
           }
           if (newValue == "vn") {
             localStorage.setItem('language', "vn");
             localizationManager.changeLanguageToVietnamese();
-            Navigator.of(context).pushReplacementNamed("/");
+            Navigator.of(context).pushNamed("/");
           }
         },
         elevation: 16,

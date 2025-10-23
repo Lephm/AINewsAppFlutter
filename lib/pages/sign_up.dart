@@ -158,7 +158,9 @@ class _SignUpState extends ConsumerState<SignUp> {
       },
       icon: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
-        child: Icon(obsecurePassword ? Icons.visibility : Icons.visibility_off),
+        child: Icon(
+          obsecureConfirmedPassword ? Icons.visibility : Icons.visibility_off,
+        ),
       ),
     );
   }

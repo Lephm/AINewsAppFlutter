@@ -73,7 +73,7 @@ class _SignUpState extends ConsumerState<SignUp> {
     var currentTheme = ref.watch(themeProvider);
     return Column(
       children: [
-        Image(image: AssetImage("assets/blackcircle.png")),
+        Image(image: AssetImage("assets/app_logo.png"), height: 300),
         Text(
           localization.welcome,
           style: currentTheme.textTheme.headlineMedium,

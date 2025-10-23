@@ -9,6 +9,7 @@ import '../providers/theme_provider.dart';
 import '../widgets/custom_safe_area.dart';
 
 final supabase = Supabase.instance.client;
+const double thumbnailImageHeight = 300;
 
 class FullArticlePage extends ConsumerStatefulWidget {
   const FullArticlePage({super.key, this.arg});
@@ -91,8 +92,10 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
 
               Image.network(
                 articleData!.thumbnailUrl,
+                errorBuilder: (context, error, stackTrace) =>
+                    displayThumbnailErrorWidget(),
                 width: double.infinity,
-                height: 300,
+                height: thumbnailImageHeight,
                 fit: BoxFit.cover,
               ),
               Text(
@@ -146,6 +149,20 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
   }
 
   void showErrorMessage() {}
+
+  Widget displayThumbnailErrorWidget() {
+    var currentTheme = ref.watch(themeProvider);
+    return SizedBox(
+      width: double.infinity,
+      height: thumbnailImageHeight,
+      child: Center(
+        child: CircularProgressIndicator(
+          backgroundColor: currentTheme.currentColorScheme.bgPrimary,
+          color: currentTheme.currentColorScheme.bgInverse,
+        ),
+      ),
+    );
+  }
 
   Widget displayGoToSourceButton() {
     var currentTheme = ref.watch(themeProvider);

@@ -19,7 +19,6 @@ class BookmarksPage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _BookmarksPageState();
 }
 
-//TODO: Fix bookmark page error
 class _BookmarksPageState extends ConsumerState<BookmarksPage> with Pagination {
   List<ArticleData> bookmarkArticles = [];
   final ScrollController scrollController = ScrollController();

@@ -33,10 +33,12 @@ class MainArticlesNotifier extends Notifier<List<ArticleData>> {
       if (data.isEmpty) {
         throw ArticleDataIsEmpty("There are no more articles");
       }
-      data.forEach((value) {
+
+      for (var value in data) {
         state = [...state, ArticleData.fromJson(value)];
-      });
+      }
     } on ArticleDataIsEmpty catch (e) {
+      debugPrint(e.toString());
       rethrow;
     } catch (e) {
       if (context.mounted) {
@@ -60,9 +62,9 @@ class MainArticlesNotifier extends Notifier<List<ArticleData>> {
     state = [];
     try {
       final data = await queryArticles(queryParams, startIndex, endIndex);
-      data.forEach((value) {
+      for (var value in data) {
         state = [...state, ArticleData.fromJson(value)];
-      });
+      }
     } catch (e) {
       if (context.mounted) {
         showAlertMessage(

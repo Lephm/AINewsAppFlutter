@@ -8,6 +8,7 @@ import '../models/article_data.dart';
 import '../providers/localization_provider.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/article_container.dart';
+import '../widgets/custom_safe_area.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -51,7 +52,7 @@ class _SearchedArticlesPageState extends ConsumerState<SearchedArticlesPage>
 
     scrollController.addListener(onScroll);
 
-    return SafeArea(
+    return CustomSafeArea(
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: currentTheme.currentColorScheme.bgPrimary,

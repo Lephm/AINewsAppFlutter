@@ -5,6 +5,7 @@ import 'package:centranews/providers/theme_provider.dart';
 import 'package:centranews/utils/validationhelper.dart';
 import 'package:centranews/widgets/custom_checkbox.dart';
 import 'package:centranews/widgets/custom_form_button.dart';
+import 'package:centranews/widgets/custom_safe_area.dart';
 import 'package:centranews/widgets/custom_textformfield.dart';
 import 'package:centranews/widgets/form_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -28,50 +29,52 @@ class _SignInState extends ConsumerState<SignIn> {
   Widget build(BuildContext context) {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: FormAppBar(
-        onBackButtonPressed: () {
-          Navigator.of(context).pushNamed("/");
-        },
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 50),
-          child: SizedBox(
-            width: double.infinity,
+    return CustomSafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: FormAppBar(
+          onBackButtonPressed: () {
+            Navigator.of(context).pushNamed("/");
+          },
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 50),
+            child: SizedBox(
+              width: double.infinity,
 
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
 
-              children: [
-                appIntroWidget(),
-                signInForm(),
-                rememberMeAndForgotPasswordRow(),
-                signInWithSocialMediaRow(),
-                otherSignInMethodRow(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed("/sign_up");
-                    },
-                    child: Text(
-                      localization.dontHaveAnAccountSignUpHere,
-                      style: TextStyle(
-                        color: currentTheme.currentColorScheme.textSecondary,
-                        decoration: TextDecoration.underline,
+                children: [
+                  appIntroWidget(),
+                  signInForm(),
+                  rememberMeAndForgotPasswordRow(),
+                  signInWithSocialMediaRow(),
+                  otherSignInMethodRow(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed("/sign_up");
+                      },
+                      child: Text(
+                        localization.dontHaveAnAccountSignUpHere,
+                        style: TextStyle(
+                          color: currentTheme.currentColorScheme.textSecondary,
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
+        backgroundColor: currentTheme.currentColorScheme.bgPrimary,
       ),
-      backgroundColor: currentTheme.currentColorScheme.bgPrimary,
     );
   }
 

@@ -3,12 +3,12 @@ import 'package:centranews/providers/main_articles_provider.dart';
 import 'package:centranews/providers/query_categories_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
 import 'package:centranews/utils/pagination.dart';
-import 'package:centranews/widgets/BannerAdContainer.dart';
+import 'package:centranews/widgets/banner_ad_container.dart';
 import 'package:centranews/widgets/article_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const numberOfArticlesBeforeShowingBannerAd = 2;
+const numberOfArticlesBeforeShowingBannerAd = 1;
 
 class NewsPage extends ConsumerStatefulWidget {
   const NewsPage({super.key});

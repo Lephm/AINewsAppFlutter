@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:centranews/providers/theme_provider.dart';
 import 'package:centranews/widgets/article_container.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +8,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 //TODO replace this with production key
 const androidBannerAdKey = "ca-app-pub-3940256099942544/9214589741";
 const iosAndroidBannerAdKey = "ca-app-pub-3940256099942544/2435281174";
+
+//TODO: the log W/ImageReader_JNI( 3776): Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
+// is current being caused this
 
 class BannerAdContainer extends ConsumerStatefulWidget {
   const BannerAdContainer({super.key, required this.articleContainer});
@@ -39,6 +40,15 @@ class _BannerAdContainerState extends ConsumerState<BannerAdContainer> {
               SizedBox(height: 10),
             ],
           );
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    setState(() {
+      _bannerAd = null;
+    });
+    super.dispose();
   }
 
   Widget displayAd() {
@@ -81,6 +91,9 @@ class _BannerAdContainerState extends ConsumerState<BannerAdContainer> {
         },
         onAdFailedToLoad: (ad, err) {
           debugPrint("Ad failed to load with error: $err");
+          ad.dispose();
+        },
+        onAdClosed: (Ad ad) {
           ad.dispose();
         },
       ),

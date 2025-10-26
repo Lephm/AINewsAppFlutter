@@ -45,9 +45,6 @@ class _BannerAdContainerState extends ConsumerState<BannerAdContainer> {
   @override
   void dispose() {
     _bannerAd?.dispose();
-    setState(() {
-      _bannerAd = null;
-    });
     super.dispose();
   }
 
@@ -84,19 +81,34 @@ class _BannerAdContainerState extends ConsumerState<BannerAdContainer> {
       listener: BannerAdListener(
         onAdLoaded: (ad) {
           debugPrint("Ad was loaded.");
-          setState(() {
-            _bannerAd = ad as BannerAd;
-            hasSucessfullyLoadedAd = true;
-          });
+          if (mounted) {
+            setState(() {
+              _bannerAd = ad as BannerAd;
+              hasSucessfullyLoadedAd = true;
+            });
+          }
         },
         onAdFailedToLoad: (ad, err) {
           debugPrint("Ad failed to load with error: $err");
-          ad.dispose();
+          disposeAd(ad);
         },
         onAdClosed: (Ad ad) {
-          ad.dispose();
+          disposeAd(ad);
+        },
+        onAdWillDismissScreen: (Ad ad) {
+          disposeAd(ad);
         },
       ),
     ).load();
+  }
+
+  void disposeAd(Ad ad) {
+    ad.dispose();
+    if (mounted) {
+      setState(() {
+        _bannerAd = null;
+        hasSucessfullyLoadedAd = false;
+      });
+    }
   }
 }

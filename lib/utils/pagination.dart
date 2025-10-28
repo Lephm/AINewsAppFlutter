@@ -13,6 +13,8 @@ mixin Pagination {
     childAspectRatio: 1.0,
   );
 
+  EdgeInsets pageEdgeInset = EdgeInsets.symmetric(horizontal: 40, vertical: 5);
+
   int get startIndex {
     return currentPage * _itemsPerPage;
   }
@@ -46,7 +48,7 @@ mixin Pagination {
 
   bool isTheEndOfThePage(ScrollController scrollController) {
     return (scrollController.position.pixels ==
-        scrollController.position.maxScrollExtent &&
+            scrollController.position.maxScrollExtent &&
         !isLoading);
   }
 }

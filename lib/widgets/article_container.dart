@@ -2,7 +2,6 @@ import 'package:centranews/models/article_data.dart';
 import 'package:centranews/providers/local_user_provider.dart';
 import 'package:centranews/providers/localization_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
-import 'package:centranews/utils/ad_manager.dart';
 import 'package:centranews/utils/bookmark_manager.dart';
 import 'package:centranews/utils/custom_navigator_settings.dart';
 import 'package:centranews/utils/pop_up_message.dart';
@@ -139,8 +138,8 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
       width: double.infinity,
       height: thumbnaimImageHeight,
       child: Center(
-        child: CircularProgressIndicator(
-          backgroundColor: currentTheme.currentColorScheme.bgPrimary,
+        child: Icon(
+          Icons.broken_image_outlined,
           color: currentTheme.currentColorScheme.bgInverse,
         ),
       ),

@@ -88,10 +88,7 @@ class _SearchedArticlesPageState extends ConsumerState<SearchedArticlesPage>
                       physics: BouncingScrollPhysics(
                         parent: AlwaysScrollableScrollPhysics(),
                       ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 5,
-                      ),
+                      padding: pageEdgeInset,
                       itemCount: searchedArticles.length + (isLoading ? 1 : 0),
                       itemBuilder: (context, index) {
                         try {

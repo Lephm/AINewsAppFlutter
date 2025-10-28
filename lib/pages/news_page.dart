@@ -60,10 +60,7 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
                         physics: BouncingScrollPhysics(
                           parent: AlwaysScrollableScrollPhysics(),
                         ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 40,
-                          vertical: 5,
-                        ),
+                        padding: pageEdgeInset,
                         itemCount: mainArticles.length + (isLoading ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index == mainArticles.length) {

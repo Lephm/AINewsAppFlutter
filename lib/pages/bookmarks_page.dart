@@ -92,7 +92,7 @@ class _BookmarksPageState extends ConsumerState<BookmarksPage> with Pagination {
                   physics: BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics(),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 5),
+                  padding: pageEdgeInset,
                   itemCount: bookmarkArticles.length + (isLoading ? 1 : 0),
                   itemBuilder: (context, index) {
                     try {

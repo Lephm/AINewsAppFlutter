@@ -15,7 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 const double containerBorderRadius = 10;
 const double containerHorizontalLabelPadding = 5;
 final supabase = Supabase.instance.client;
-const double thumbnaimImageHeight = 150;
+const double thumbnailImageHeight = 150;
 
 class ArticleContainer extends ConsumerStatefulWidget {
   const ArticleContainer({super.key, required this.articleData});
@@ -125,7 +125,7 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
           errorBuilder: (context, error, stackTrace) =>
               displayThumbnailErrorWidget(),
           width: double.infinity,
-          height: thumbnaimImageHeight,
+          height: thumbnailImageHeight,
           fit: BoxFit.cover,
         ),
       ),
@@ -136,7 +136,7 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
     var currentTheme = ref.watch(themeProvider);
     return SizedBox(
       width: double.infinity,
-      height: thumbnaimImageHeight,
+      height: thumbnailImageHeight,
       child: Center(
         child: Icon(
           Icons.broken_image_outlined,

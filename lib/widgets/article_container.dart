@@ -410,7 +410,10 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            BackButton(style: ButtonStyle(alignment: Alignment(-1.0, -1.0))),
+            BackButton(
+              color: currentTheme.currentColorScheme.bgInverse,
+              style: ButtonStyle(alignment: Alignment(-1.0, -1.0)),
+            ),
             TextButton(
               onPressed: () async {
                 try {

@@ -24,7 +24,12 @@ class _HomeDrawerState extends ConsumerState<HomeDrawer> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(children: [titleText(), clearFilterButton()]),
+            Row(
+              children: [
+                titleText(),
+                Flexible(child: clearFilterButton()),
+              ],
+            ),
             SizedBox(height: 30),
             Expanded(
               child: ListView.builder(
@@ -45,9 +50,14 @@ class _HomeDrawerState extends ConsumerState<HomeDrawer> {
 
   Widget clearFilterButton() {
     var currentTheme = ref.watch(themeProvider);
+    var localization = ref.watch(localizationProvider);
     return TextButton(
       onPressed: clearFilter,
-      child: Text("Clear Filter", style: currentTheme.textTheme.bodyMedium),
+      child: Text(
+        localization.clearFilter,
+        style: currentTheme.textTheme.bodyMedium,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 

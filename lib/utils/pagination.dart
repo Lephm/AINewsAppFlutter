@@ -12,6 +12,7 @@ mixin Pagination {
     mainAxisExtent: 300,
     childAspectRatio: 1.0,
   );
+  static const double almostTheEndOfPagePercent = 0.9;
 
   EdgeInsets pageEdgeInset = EdgeInsets.symmetric(horizontal: 40, vertical: 5);
 
@@ -47,8 +48,9 @@ mixin Pagination {
   }
 
   bool isTheEndOfThePage(ScrollController scrollController) {
-    return (scrollController.position.pixels ==
-            scrollController.position.maxScrollExtent &&
+    return (scrollController.position.pixels >=
+            scrollController.position.maxScrollExtent *
+                almostTheEndOfPagePercent &&
         !isLoading);
   }
 

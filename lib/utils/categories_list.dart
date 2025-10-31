@@ -1,0 +1,17 @@
+List<String> categories = [
+  "Entertainment",
+  "Health",
+  "Lifestyle",
+  "Politics",
+  "Economy & Finance",
+  "World News",
+  "Russia",
+  "Vietnam",
+  "Asia - Pacific",
+  "Europe",
+  "US",
+  "Middle East",
+  "Global",
+  "Art",
+  "Sports",
+];

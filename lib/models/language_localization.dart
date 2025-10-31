@@ -56,6 +56,17 @@ class LanguageLocalizationTexts {
     required this.environment,
     required this.media,
     required this.search,
+    required this.economyAndFinance,
+    required this.lifeStyle,
+    required this.entertainment,
+    required this.asiaPacific,
+    required this.us,
+    required this.middleEast,
+    required this.global,
+    required this.art,
+    required this.vietnam,
+    required this.russia,
+    required this.category,
   });
 
   final String signIn;
@@ -95,6 +106,7 @@ class LanguageLocalizationTexts {
   final String youMustSignInPrompt;
   final String youDoNotHaveAnyBookmark;
   final String search;
+  final String category;
 
   //Categories label
   final String politics;
@@ -115,6 +127,16 @@ class LanguageLocalizationTexts {
   final String sports;
   final String environment;
   final String media;
+  final String economyAndFinance;
+  final String lifeStyle;
+  final String entertainment;
+  final String asiaPacific;
+  final String us;
+  final String middleEast;
+  final String global;
+  final String art;
+  final String vietnam;
+  final String russia;
 
   //TODO implement this map
   Map<String, String> _englishLabelTextsToLocalTextsMap() {
@@ -137,6 +159,16 @@ class LanguageLocalizationTexts {
       "Sports": sports,
       "Environment": environment,
       "Media": media,
+      "Economy & Finance": economyAndFinance,
+      "Lifestyle": lifeStyle,
+      "Entertainment": entertainment,
+      "Asia - Pacific": asiaPacific,
+      "US": us,
+      "Middle East": middleEast,
+      "Global": global,
+      "Art": art,
+      "Vietnam": vietnam,
+      "Russia": russia,
     };
   }
 
@@ -201,6 +233,17 @@ var engLocalization = const LanguageLocalizationTexts(
   sports: "Sports",
   environment: "Environment",
   media: "Media",
+  economyAndFinance: "Economy And Finance",
+  lifeStyle: "Lifestyle",
+  entertainment: "Entertainment",
+  asiaPacific: "Asia Pacific",
+  us: "US",
+  middleEast: "Middle East",
+  global: "Global",
+  art: "Art",
+  vietnam: "Vietnam",
+  russia: "Russia",
+  category: "Categories",
 );
 
 var vietLocalization = const LanguageLocalizationTexts(
@@ -259,4 +302,15 @@ var vietLocalization = const LanguageLocalizationTexts(
   environment: "Môi trường",
   media: "Truyền thông",
   search: "Tìm Kiếm",
+  economyAndFinance: "Kinh tế và tài chính",
+  lifeStyle: "Lối sống",
+  entertainment: "Giải trí",
+  asiaPacific: "Châu Á",
+  us: "Mỹ",
+  middleEast: "Trung Đông",
+  global: "Quốc tế",
+  art: "Nghệ Thuật",
+  vietnam: "Việt Nam",
+  russia: "Russia",
+  category: "Chủ Đề",
 );

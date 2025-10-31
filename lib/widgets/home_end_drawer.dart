@@ -125,7 +125,7 @@ class _HomeEndDrawerState extends ConsumerState<HomeEndDrawer> {
     var localLangPreference = localStorage.getItem("language");
     if (selectedLanguage == null) {
       setState(() {
-        selectedLanguage = localLangPreference ?? "en";
+        selectedLanguage = localLangPreference ?? "vn";
       });
     }
   }
@@ -139,16 +139,16 @@ class _HomeEndDrawerState extends ConsumerState<HomeEndDrawer> {
         value: selectedLanguage,
         items: <DropdownMenuItem<String>>[
           DropdownMenuItem(
-            value: 'en',
+            value: 'vn',
             child: Text(
-              "English",
+              "Vietnamese",
               style: currentTheme.textTheme.bodyLightMedium,
             ),
           ),
           DropdownMenuItem(
-            value: 'vn',
+            value: 'en',
             child: Text(
-              "Vietnamese",
+              "English",
               style: currentTheme.textTheme.bodyLightMedium,
             ),
           ),

@@ -162,10 +162,11 @@ class _SignInState extends ConsumerState<SignIn> {
   }
 
   Widget horizontalDivideLine() {
+    var currentTheme = ref.watch(themeProvider);
     return Expanded(
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-        color: Colors.black,
+        color: currentTheme.currentColorScheme.bgInverse,
         width: double.infinity,
         height: 1,
       ),

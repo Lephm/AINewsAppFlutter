@@ -1,6 +1,5 @@
 import 'package:centranews/models/article_data.dart';
 import 'package:centranews/providers/localization_provider.dart';
-import 'package:centranews/providers/query_categories_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
 import 'package:centranews/utils/custom_exception.dart';
 import 'package:centranews/utils/pop_up_message.dart';
@@ -25,11 +24,16 @@ class MainArticlesNotifier extends Notifier<List<ArticleData>> {
     required BuildContext context,
     required int startIndex,
     required int endIndex,
+    List<String> queryParams = const [],
   }) async {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
     try {
-      final data = await queryArticles(startIndex, endIndex);
+      final data = await queryArticles(
+        startIndex,
+        endIndex,
+        queryParams: queryParams,
+      );
       if (data.isEmpty) {
         throw ArticleDataIsEmpty("There are no more articles");
       }
@@ -55,12 +59,16 @@ class MainArticlesNotifier extends Notifier<List<ArticleData>> {
     required BuildContext context,
     required int startIndex,
     required int endIndex,
+    List<String> queryParams = const [],
   }) async {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
-    var queryCategoryManager = ref.watch(queryCategoriesProvider.notifier);
     try {
-      final data = await queryArticles(startIndex, endIndex);
+      final data = await queryArticles(
+        startIndex,
+        endIndex,
+        queryParams: queryParams,
+      );
       state = [];
       for (var value in data) {
         state = [...state, ArticleData.fromJson(value)];
@@ -78,9 +86,9 @@ class MainArticlesNotifier extends Notifier<List<ArticleData>> {
 
   Future<List<Map<String, dynamic>>> queryArticles(
     int startIndex,
-    int endIndex,
-  ) async {
-    var queryParams = ref.watch(queryCategoriesProvider);
+    int endIndex, {
+    List<String> queryParams = const [],
+  }) async {
     if (queryParams.isEmpty) {
       return supabase
           .from('articles')

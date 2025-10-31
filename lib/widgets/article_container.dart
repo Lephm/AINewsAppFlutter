@@ -49,9 +49,9 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
         color: currentTheme.currentColorScheme.bgPrimary,
         boxShadow: [
           BoxShadow(
-            spreadRadius: 1,
+            spreadRadius: 5,
             blurRadius: 5,
-            offset: Offset(5, 3),
+            offset: Offset(0, 0),
             color: currentTheme.currentColorScheme.bgInverse.withAlpha(100),
           ),
         ],
@@ -177,18 +177,23 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
       children: [
         Flexible(
           flex: 1,
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              vertical: 0,
-              horizontal: containerHorizontalLabelPadding,
-            ),
-            alignment: AlignmentDirectional.centerStart,
-            child: Text(
-              widget.articleData.articleTitle,
-              style: currentTheme.textTheme.bodyMediumBold,
-              textAlign: TextAlign.start,
-              maxLines: 2,
-              overflow: TextOverflow.fade,
+          child: TextButton(
+            onPressed: () {
+              goToFullArticlePage();
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                vertical: 0,
+                horizontal: containerHorizontalLabelPadding,
+              ),
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(
+                widget.articleData.articleTitle,
+                style: currentTheme.textTheme.bodyMediumBold,
+                textAlign: TextAlign.start,
+                maxLines: 2,
+                overflow: TextOverflow.fade,
+              ),
             ),
           ),
         ),
@@ -200,12 +205,11 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
   Widget displayShareAndBookmarkButton() {
     return Container(
       alignment: Alignment.centerRight,
-      child: Row(
-        children: [shareButton(), SizedBox(width: 10), bookmarkButton()],
-      ),
+      child: Row(children: [SizedBox(width: 10), bookmarkButton()]),
     );
   }
 
+  //TODO: implement this and add it to displayShareAndBookMarkButton
   Widget shareButton() {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
@@ -345,18 +349,23 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
 
   Widget displaySummaryText() {
     var currentTheme = ref.watch(themeProvider);
-    return Container(
-      alignment: Alignment.centerLeft,
-      padding: EdgeInsets.symmetric(
-        vertical: 0,
-        horizontal: containerHorizontalLabelPadding,
-      ),
-      child: Text(
-        widget.articleData.articleSummary,
-        style: currentTheme.textTheme.bodySmall,
-        textAlign: TextAlign.start,
-        maxLines: 2,
-        overflow: TextOverflow.fade,
+    return TextButton(
+      onPressed: () {
+        goToFullArticlePage();
+      },
+      child: Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.symmetric(
+          vertical: 0,
+          horizontal: containerHorizontalLabelPadding,
+        ),
+        child: Text(
+          widget.articleData.articleSummary,
+          style: currentTheme.textTheme.bodySmall,
+          textAlign: TextAlign.start,
+          maxLines: 2,
+          overflow: TextOverflow.fade,
+        ),
       ),
     );
   }
@@ -374,16 +383,20 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
   Widget displayReadMoreButton() {
     var localization = ref.watch(localizationProvider);
     var currentTheme = ref.watch(themeProvider);
-    var articleID = widget.articleData.articleID;
     return TextButton(
       onPressed: () {
-        Navigator.of(context).pushNamed("full_article/$articleID");
+        goToFullArticlePage();
       },
       child: Text(
         localization.readMore,
         style: currentTheme.textTheme.smallLabelBold,
       ),
     );
+  }
+
+  void goToFullArticlePage() {
+    var articleID = widget.articleData.articleID;
+    Navigator.of(context).pushNamed("full_article/$articleID");
   }
 
   Widget displaySourceButton() {

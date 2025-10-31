@@ -1,4 +1,7 @@
+import 'package:centranews/providers/localization_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
+import 'package:centranews/utils/categories_list.dart';
+import 'package:centranews/widgets/category_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,8 +17,57 @@ class _HomeDrawerState extends ConsumerState<HomeDrawer> {
   Widget build(BuildContext context) {
     var currentTheme = ref.watch(themeProvider);
     return Drawer(
-      backgroundColor: currentTheme.currentColorScheme.bgPrimary,
-      child: Text("Drawer"),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 2, vertical: 15),
+        color: currentTheme.currentColorScheme.bgPrimary,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            titleText(),
+            SizedBox(height: 30),
+            Expanded(
+              child: ListView.builder(
+                physics: BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
+                itemCount: categories.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return CategorySelection(category: categories[index]);
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget titleText() {
+    var localization = ref.watch(localizationProvider);
+    var currentTheme = ref.watch(themeProvider);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      width: 200,
+      decoration: BoxDecoration(
+        border: Border.all(color: currentTheme.currentColorScheme.bgInverse),
+        borderRadius: BorderRadius.circular(10),
+        color: currentTheme.currentColorScheme.bgPrimary,
+      ),
+      child: Text(
+        localization.category,
+        style: currentTheme.textTheme.headlineMedium,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget horizontalDivideLine() {
+    var currentTheme = ref.watch(themeProvider);
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+      color: currentTheme.currentColorScheme.bgInverse,
+      width: double.infinity,
+      height: 1,
     );
   }
 }

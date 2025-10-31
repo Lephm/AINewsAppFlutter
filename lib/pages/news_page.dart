@@ -21,12 +21,19 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
       GlobalKey<RefreshIndicatorState>();
   final ScrollController scrollController = ScrollController();
   bool hasFetchDataForTheFirstTime = false;
+  List<String> currentQueryCategories = [];
 
   @override
   Widget build(BuildContext context) {
     var mainArticles = ref.watch(mainArticlesProvider);
     var currentTheme = ref.watch(themeProvider);
     var queryCategories = ref.watch(queryCategoriesProvider);
+    if (currentQueryCategories != queryCategories) {
+      setState(() {
+        currentQueryCategories = queryCategories;
+      });
+      refreshData();
+    }
     scrollController.addListener(onScroll);
     if (mounted && !hasFetchDataForTheFirstTime) {
       if (mainArticles.isEmpty) {
@@ -37,7 +44,7 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
         });
       }
     }
-    return (mainArticles.isEmpty && !isLoading)
+    return (mainArticles.isEmpty && !isLoading && queryCategories.isNotEmpty)
         ? displayCantFindRelevantArticles()
         : Center(
             child: Column(
@@ -63,15 +70,19 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
                         padding: pageEdgeInset,
                         itemCount: mainArticles.length + (isLoading ? 1 : 0),
                         itemBuilder: (context, index) {
-                          if (index == mainArticles.length) {
-                            if (queryCategories.isEmpty && isLoading) {
-                              return displayCircularProgressBar(currentTheme);
+                          try {
+                            if (index == mainArticles.length) {
+                              if (queryCategories.isEmpty && isLoading) {
+                                return displayCircularProgressBar(currentTheme);
+                              }
                             }
+                            return ArticleContainer(
+                              articleData: mainArticles[index],
+                              key: UniqueKey(),
+                            );
+                          } catch (e) {
+                            return displayCircularProgressBar(currentTheme);
                           }
-                          return ArticleContainer(
-                            articleData: mainArticles[index],
-                            key: UniqueKey(),
-                          );
                         },
                       ),
                     ),
@@ -113,11 +124,13 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
       });
     }
     var mainArticleNotifier = ref.watch(mainArticlesProvider.notifier);
+    var queryCategoriesList = ref.watch(queryCategoriesProvider);
     try {
       await mainArticleNotifier.fetchArticlesData(
         context: context,
         startIndex: startIndex,
         endIndex: endIndex,
+        queryParams: queryCategoriesList,
       );
     } catch (e) {
       debugPrint(e.toString());
@@ -170,16 +183,24 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
     );
   }
 
-  void refreshData() {
+  void refreshData() async {
     var mainArticleNotifier = ref.watch(mainArticlesProvider.notifier);
+    var queryCategoriesList = ref.watch(queryCategoriesProvider);
     setState(() {
       resetCurrentPage();
+      isLoading = true;
     });
     debugPrint("refresh articles data");
-    mainArticleNotifier.refereshArticlesData(
+    await mainArticleNotifier.refereshArticlesData(
       context: context,
       startIndex: startIndex,
       endIndex: endIndex,
+      queryParams: queryCategoriesList,
     );
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 }

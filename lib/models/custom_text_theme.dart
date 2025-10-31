@@ -80,6 +80,12 @@ class CustomTextTheme {
     );
   }
 
+  TextStyle get hyperlinkSourceStyle {
+    return GoogleFonts.lato(
+      textStyle: TextStyle(fontSize: 15, color: currentColorScheme.textPrimary),
+    );
+  }
+
   TextStyle get navigationLabelStyle {
     return GoogleFonts.lato(
       textStyle: TextStyle(fontSize: 12, color: currentColorScheme.textPrimary),

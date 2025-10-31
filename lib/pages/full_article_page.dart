@@ -74,39 +74,57 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
     return SingleChildScrollView(
-      child: Center(
-        child: Container(
-          constraints: BoxConstraints(maxWidth: 800),
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          child: Column(
-            spacing: 10,
-            children: [
-              Text(
-                articleData!.articleTitle,
-                style: currentTheme.textTheme.headlineMedium,
-              ),
-
-              Image.network(
-                articleData!.thumbnailUrl,
-                errorBuilder: (context, error, stackTrace) =>
-                    displayThumbnailErrorWidget(),
-                width: double.infinity,
-                height: thumbnailImageHeight,
-                fit: BoxFit.cover,
-              ),
-              Text(
-                articleData!.articleSummary,
-                style: currentTheme.textTheme.bodySmall,
-              ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  localization.sources,
-                  style: currentTheme.textTheme.bodyBold,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: currentTheme.currentColorScheme.bgPrimary,
+              boxShadow: [
+                BoxShadow(
+                  spreadRadius: 5,
+                  blurRadius: 5,
+                  offset: Offset(0, 0),
+                  color: currentTheme.currentColorScheme.bgInverse.withAlpha(
+                    100,
+                  ),
                 ),
-              ),
-              displayGoToSourceButton(),
-            ],
+              ],
+            ),
+            constraints: BoxConstraints(maxWidth: 800),
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            child: Column(
+              spacing: 10,
+              children: [
+                Text(
+                  articleData!.articleTitle,
+                  style: currentTheme.textTheme.headlineMedium,
+                ),
+
+                Image.network(
+                  articleData!.thumbnailUrl,
+                  errorBuilder: (context, error, stackTrace) =>
+                      displayThumbnailErrorWidget(),
+                  width: double.infinity,
+                  height: thumbnailImageHeight,
+                  fit: BoxFit.cover,
+                ),
+                Text(
+                  articleData!.articleSummary,
+                  style: currentTheme.textTheme.bodySmall,
+                ),
+                horizontalDivideLine(),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    localization.sources,
+                    style: currentTheme.textTheme.bodyBold,
+                  ),
+                ),
+                displayGoToSourceButton(),
+              ],
+            ),
           ),
         ),
       ),
@@ -160,6 +178,16 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
     );
   }
 
+  Widget horizontalDivideLine() {
+    var currentTheme = ref.watch(themeProvider);
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+      color: currentTheme.currentColorScheme.bgInverse,
+      width: double.infinity,
+      height: 1,
+    );
+  }
+
   Widget displayGoToSourceButton() {
     var currentTheme = ref.watch(themeProvider);
     return TextButton(
@@ -177,7 +205,7 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
           Expanded(
             child: Text(
               articleData!.source,
-              style: currentTheme.textTheme.bodyMedium,
+              style: currentTheme.textTheme.hyperlinkSourceStyle,
             ),
           ),
         ],

@@ -28,6 +28,7 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
         hintStyle: WidgetStatePropertyAll(
           currentTheme.textTheme.bodyLightMedium,
         ),
+        textStyle: WidgetStatePropertyAll(currentTheme.textTheme.bodyMedium),
         hintText: localization.search,
         backgroundColor: WidgetStatePropertyAll(
           currentTheme.currentColorScheme.bgPrimary,

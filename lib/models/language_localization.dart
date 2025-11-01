@@ -322,7 +322,7 @@ var vietLocalization = const LanguageLocalizationTexts(
   vietnam: "Việt Nam",
   russia: "Russia",
   category: "Chủ Đề",
-  relatedArticles: "Gợi ý bài viết",
+  relatedArticles: "Bài viết gợi ý",
   clearFilter: "Xóa chọn lọc",
   pleaseEnterSearchTerm: "Hãy nhập từ khóa tìm kiếm",
 );

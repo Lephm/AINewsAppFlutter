@@ -22,12 +22,9 @@ class _CategorySelectionState extends ConsumerState<CategorySelection> {
     var localization = ref.watch(localizationProvider);
     updateCheckboxValue();
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
         color: currentTheme.currentColorScheme.bgPrimary,
       ),
-      width: 60,
       child: CheckboxListTile(
         title: Text(
           localization.getLocalLanguageLabelText(widget.category),

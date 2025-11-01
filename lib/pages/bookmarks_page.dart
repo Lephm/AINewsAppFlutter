@@ -165,9 +165,11 @@ class _BookmarksPageState extends ConsumerState<BookmarksPage> with Pagination {
     if (localUser == null) {
       return;
     }
-    setState(() {
-      isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
 
     try {
       var bookmarkArticlesList = await BookmarkManager.getBookmarkArticles(
@@ -193,22 +195,29 @@ class _BookmarksPageState extends ConsumerState<BookmarksPage> with Pagination {
   }
 
   void onRefresh() async {
-    setState(() {
-      resetCurrentPage();
-      isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        resetCurrentPage();
+        isLoading = true;
+      });
+    }
+
     try {
       var bookmarkArticlesList = await BookmarkManager.getBookmarkArticles(
         startIndex,
         endIndex,
       );
-      setState(() {
-        bookmarkArticles = [];
-      });
-      if (bookmarkArticlesList.isNotEmpty) {
+      if (mounted) {
         setState(() {
-          bookmarkArticles = [...bookmarkArticles, ...bookmarkArticlesList];
+          bookmarkArticles = [];
         });
+      }
+      if (bookmarkArticlesList.isNotEmpty) {
+        if (mounted) {
+          setState(() {
+            bookmarkArticles = [...bookmarkArticles, ...bookmarkArticlesList];
+          });
+        }
       }
     } catch (e) {
       debugPrint(e.toString());

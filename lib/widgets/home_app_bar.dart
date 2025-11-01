@@ -1,9 +1,9 @@
+import 'package:centranews/models/app_info.dart';
 import 'package:centranews/providers/theme_provider.dart';
-import 'package:centranews/widgets/custom_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../models/custom_theme.dart';
+const double iconSize = 30;
 
 class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const HomeAppBar({
@@ -21,31 +21,24 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
     return AppBar(
       forceMaterialTransparency: true,
       backgroundColor: currentTheme.currentColorScheme.bgPrimary,
-      leading: (isNewsPage())
-          ? drawerIcon(context, currentTheme)
-          : SizedBox.shrink(),
-      title: Center(
-        child: (isNewsPage())
-            ? appIcon(ref)
-            : Text(
+      leadingWidth: isNewsPage() ? 500 : 0,
+      leading: isNewsPage() ? appIcon(ref) : SizedBox.shrink(),
+      title: isNewsPage()
+          ? SizedBox.shrink()
+          : Center(
+              child: Text(
                 headerText,
                 style: currentTheme.textTheme.headlineMedium,
-                textAlign: TextAlign.start,
-              ),
-      ),
-      actions: [
-        Row(
-          children: [
-            IconButton(
-              onPressed: () {
-                Scaffold.of(context).openEndDrawer();
-              },
-              icon: Icon(
-                Icons.account_circle,
-                size: 30,
-                color: currentTheme.currentColorScheme.bgInverse,
+                textAlign: TextAlign.center,
               ),
             ),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            (isNewsPage() ? searchIcon(ref, context) : SizedBox.shrink()),
+            (isNewsPage() ? filterIcon(ref, context) : SizedBox.shrink()),
+            settingIconButton(context, ref),
           ],
         ),
       ],
@@ -59,23 +52,67 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
     return currentPageIndex == 0;
   }
 
-  Widget appIcon(WidgetRef ref) {
+  Widget searchIcon(WidgetRef ref, BuildContext context) {
     var currentTheme = ref.watch(themeProvider);
-    return Image(
-      image: AssetImage("assets/app_icon.png"),
-      height: 40,
-      color: currentTheme.currentColorScheme.bgInverse,
+    return IconButton(
+      onPressed: () {
+        Navigator.of(context).pushNamed("/search_articles");
+      },
+      icon: Icon(
+        Icons.search,
+        size: iconSize,
+        color: currentTheme.currentColorScheme.bgInverse,
+      ),
     );
   }
 
-  Widget drawerIcon(BuildContext context, CustomTheme currentTheme) {
+  Widget settingIconButton(BuildContext context, WidgetRef ref) {
+    var currentTheme = ref.watch(themeProvider);
+    return IconButton(
+      onPressed: () {
+        Scaffold.of(context).openEndDrawer();
+      },
+      icon: Icon(
+        Icons.account_circle,
+        size: iconSize,
+        color: currentTheme.currentColorScheme.bgInverse,
+      ),
+    );
+  }
+
+  Widget appIcon(WidgetRef ref) {
+    var currentTheme = ref.watch(themeProvider);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 5,
+        children: [
+          Flexible(
+            child: Image(image: AssetImage("assets/app_icon.png"), height: 30),
+          ),
+          Flexible(
+            child: Text(
+              AppInfo.title,
+              style: currentTheme.textTheme.headlineMedium,
+              textAlign: TextAlign.justify,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget filterIcon(WidgetRef ref, BuildContext context) {
+    var currentTheme = ref.watch(themeProvider);
     return IconButton(
       onPressed: () {
         Scaffold.of(context).openDrawer();
       },
       icon: Icon(
         Icons.filter_alt,
-        size: 24,
+        size: iconSize,
         color: currentTheme.currentColorScheme.bgInverse,
       ),
     );

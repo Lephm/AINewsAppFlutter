@@ -1,3 +1,4 @@
+import 'package:centranews/models/app_info.dart';
 import 'package:centranews/models/language_localization.dart';
 import 'package:centranews/pages/bookmarks_page.dart';
 import 'package:centranews/pages/discover_page.dart';
@@ -34,7 +35,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
     if (currentPageHeaderText == "") {
-      currentPageHeaderText = localization.news;
+      currentPageHeaderText = AppInfo.title;
     }
     return CustomSafeArea(
       child: Scaffold(
@@ -69,7 +70,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     String newHeaderText = "";
     switch (currentPageIndex) {
       case 0:
-        newHeaderText = localization.news;
+        newHeaderText = AppInfo.title;
         break;
       case 1:
         newHeaderText = localization.discovery;
@@ -78,7 +79,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         newHeaderText = localization.bookmarks;
         break;
       default:
-        newHeaderText = localization.news;
+        newHeaderText = AppInfo.title;
     }
     setState(() {
       currentPageHeaderText = newHeaderText;

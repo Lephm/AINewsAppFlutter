@@ -1,4 +1,3 @@
-import 'package:centranews/pages/searched_articles_page.dart';
 import 'package:centranews/providers/localization_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -41,16 +40,7 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
           EdgeInsets.symmetric(horizontal: 16.0),
         ),
         onSubmitted: (value) {
-          if (widget.onSubmittedSearched != null) {
-            widget.onSubmittedSearched!(value);
-          } else {
-            if (value == "" || value.isEmpty) return;
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => SearchedArticlesPage(queryArg: value),
-              ),
-            );
-          }
+          widget.onSubmittedSearched!(value);
         },
       ),
     );

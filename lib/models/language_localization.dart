@@ -69,6 +69,7 @@ class LanguageLocalizationTexts {
     required this.category,
     required this.relatedArticles,
     required this.clearFilter,
+    required this.pleaseEnterSearchTerm,
   });
 
   final String signIn;
@@ -111,6 +112,7 @@ class LanguageLocalizationTexts {
   final String category;
   final String relatedArticles;
   final String clearFilter;
+  final String pleaseEnterSearchTerm;
 
   //Categories label
   final String politics;
@@ -250,6 +252,7 @@ var engLocalization = const LanguageLocalizationTexts(
   category: "Categories",
   relatedArticles: "Suggested Articles",
   clearFilter: "Clear Filter",
+  pleaseEnterSearchTerm: "Please Enter Search Term",
 );
 
 var vietLocalization = const LanguageLocalizationTexts(
@@ -321,4 +324,5 @@ var vietLocalization = const LanguageLocalizationTexts(
   category: "Chủ Đề",
   relatedArticles: "Gợi ý bài viết",
   clearFilter: "Xóa chọn lọc",
+  pleaseEnterSearchTerm: "Hãy nhập từ khóa tìm kiếm",
 );

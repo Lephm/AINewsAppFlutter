@@ -13,9 +13,7 @@ import '../widgets/custom_safe_area.dart';
 final supabase = Supabase.instance.client;
 
 class SearchedArticlesPage extends ConsumerStatefulWidget {
-  const SearchedArticlesPage({super.key, this.queryArg});
-
-  final String? queryArg;
+  const SearchedArticlesPage({super.key});
 
   @override
   ConsumerState<SearchedArticlesPage> createState() =>
@@ -27,24 +25,6 @@ class _SearchedArticlesPageState extends ConsumerState<SearchedArticlesPage>
   final ScrollController scrollController = ScrollController();
   String searchTerm = "";
   List<ArticleData> searchedArticles = [];
-
-  @override
-  void initState() {
-    super.initState();
-    try {
-      final arg = widget.queryArg;
-      if (arg == "" || arg == null || arg.isEmpty) {
-        Navigator.of(context).pushNamed("/");
-      } else {
-        searchArticles(arg);
-        setState(() {
-          searchTerm = arg;
-        });
-      }
-    } catch (e) {
-      Navigator.of(context).pushNamed("/");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,39 +56,63 @@ class _SearchedArticlesPageState extends ConsumerState<SearchedArticlesPage>
           ),
         ),
         backgroundColor: currentTheme.currentColorScheme.bgPrimary,
-        body: (searchedArticles.isEmpty && !isLoading)
+        body: (searchTerm == "" && searchedArticles.isEmpty)
+            ? displayPleaseEnterSearchTerm()
+            : cantFindRelatedArticles()
             ? displayCantFindRelevantArticles()
-            : Center(
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: 1200),
-                    child: GridView.builder(
-                      gridDelegate: pageGridDelegate,
-                      controller: scrollController,
-                      physics: BouncingScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics(),
-                      ),
-                      padding: pageEdgeInset,
-                      itemCount: searchedArticles.length + (isLoading ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        try {
-                          if (index == searchedArticles.length) {
-                            if (searchedArticles.isEmpty && isLoading) {
-                              return displayCircularProgressBar(currentTheme);
-                            }
-                          }
-                          return ArticleContainer(
-                            articleData: searchedArticles[index],
-                            key: UniqueKey(),
-                          );
-                        } catch (e) {
-                          return displayCircularProgressBar(currentTheme);
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ),
+            : displayArticles(),
+      ),
+    );
+  }
+
+  bool cantFindRelatedArticles() {
+    return (searchedArticles.isEmpty && !isLoading);
+  }
+
+  Widget displayPleaseEnterSearchTerm() {
+    var currentTheme = ref.watch(themeProvider);
+    var localization = ref.watch(localizationProvider);
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Text(
+        localization.pleaseEnterSearchTerm,
+        style: currentTheme.textTheme.bodyMediumBold,
+      ),
+    );
+    ;
+  }
+
+  Widget displayArticles() {
+    var currentTheme = ref.watch(themeProvider);
+    return Center(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 1200),
+          child: GridView.builder(
+            gridDelegate: pageGridDelegate,
+            controller: scrollController,
+            physics: BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            padding: pageEdgeInset,
+            itemCount: searchedArticles.length + (isLoading ? 1 : 0),
+            itemBuilder: (context, index) {
+              try {
+                if (index == searchedArticles.length) {
+                  if (searchedArticles.isEmpty && isLoading) {
+                    return displayCircularProgressBar(currentTheme);
+                  }
+                }
+                return ArticleContainer(
+                  articleData: searchedArticles[index],
+                  key: UniqueKey(),
+                );
+              } catch (e) {
+                return displayCircularProgressBar(currentTheme);
+              }
+            },
+          ),
+        ),
       ),
     );
   }

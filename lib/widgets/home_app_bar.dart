@@ -21,17 +21,15 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
     return AppBar(
       forceMaterialTransparency: true,
       backgroundColor: currentTheme.currentColorScheme.bgPrimary,
-      leadingWidth: isNewsPage() ? 500 : 0,
-      leading: isNewsPage() ? appIcon(ref) : SizedBox.shrink(),
-      title: isNewsPage()
-          ? SizedBox.shrink()
-          : Center(
-              child: Text(
-                headerText,
-                style: currentTheme.textTheme.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
-            ),
+      leadingWidth: 500,
+      leading: isNewsPage() ? appIcon(ref) : Center(
+        child: Text(
+          headerText,
+          style: currentTheme.textTheme.headlineMedium,
+          textAlign: TextAlign.center,
+        ),
+      ),
+
       actions: [
         Row(
           mainAxisAlignment: MainAxisAlignment.end,

@@ -185,7 +185,9 @@ class _SignInState extends ConsumerState<SignIn> {
             ),
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pushNamed("/reset_password_prompt");
+            },
             child: Text(
               localization.forgotPassword,
               style: TextStyle(

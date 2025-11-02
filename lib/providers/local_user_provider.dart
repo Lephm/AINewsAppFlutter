@@ -156,7 +156,6 @@ class UserNotifier extends Notifier<LocalUser?> {
     }
   }
 
-  //TODO extract this to util file
   void showProgressBar(BuildContext context) {
     var currentTheme = ref.watch(themeProvider);
     _progressBarRoute = DialogRoute(

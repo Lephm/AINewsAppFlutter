@@ -1,5 +1,7 @@
 import 'package:centranews/pages/full_article_page.dart';
 import 'package:centranews/pages/home_page.dart';
+import 'package:centranews/pages/reset_password_page.dart';
+import 'package:centranews/pages/reset_password_prompt_page.dart';
 import 'package:centranews/pages/searched_articles_page.dart';
 import 'package:centranews/pages/sign_in.dart';
 import 'package:centranews/pages/sign_up.dart';
@@ -11,6 +13,8 @@ abstract class CustomNavigatorSettings {
     "/sign_in": (context) => SignIn(),
     "/sign_up": (context) => SignUp(),
     "/search_articles": (context) => SearchedArticlesPage(),
+    "/reset_password_prompt": (context) => ResetPasswordPromptPage(),
+    "/reset_password": (context) => ResetPasswordPage(),
   };
 
   static String initialRoute = '/';

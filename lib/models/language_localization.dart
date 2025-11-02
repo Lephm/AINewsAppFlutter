@@ -70,6 +70,11 @@ class LanguageLocalizationTexts {
     required this.relatedArticles,
     required this.clearFilter,
     required this.pleaseEnterSearchTerm,
+    required this.emailPromptToResetPassword,
+    required this.enterYourResetPasswordCode,
+    required this.weHaveSendResetPasswordCode,
+    required this.resetPassword,
+    required this.resetPasswordSucessfully,
   });
 
   final String signIn;
@@ -113,6 +118,11 @@ class LanguageLocalizationTexts {
   final String relatedArticles;
   final String clearFilter;
   final String pleaseEnterSearchTerm;
+  final String emailPromptToResetPassword;
+  final String enterYourResetPasswordCode;
+  final String weHaveSendResetPasswordCode;
+  final String resetPassword;
+  final String resetPasswordSucessfully;
 
   //Categories label
   final String politics;
@@ -253,6 +263,11 @@ var engLocalization = const LanguageLocalizationTexts(
   relatedArticles: "Suggested Articles",
   clearFilter: "Clear Filter",
   pleaseEnterSearchTerm: "Please Enter Search Term",
+  emailPromptToResetPassword: "Please Confirm Your Email",
+  enterYourResetPasswordCode: "Enter your reset password code",
+  weHaveSendResetPasswordCode: "We have send your a reset password code",
+  resetPassword: "Reset password",
+  resetPasswordSucessfully: "You have reset password sucessfully",
 );
 
 var vietLocalization = const LanguageLocalizationTexts(
@@ -325,4 +340,9 @@ var vietLocalization = const LanguageLocalizationTexts(
   relatedArticles: "Bài viết gợi ý",
   clearFilter: "Xóa chọn lọc",
   pleaseEnterSearchTerm: "Hãy nhập từ khóa tìm kiếm",
+  emailPromptToResetPassword: "Hãy xác nhận email bạn",
+  enterYourResetPasswordCode: "Hãy nhập mã xác nhận",
+  weHaveSendResetPasswordCode: "Chúng tôi đã gửi mã xác nhận cho bận",
+  resetPassword: "Cài đặt mặt khẩu mới",
+  resetPasswordSucessfully: "Mật khẩu mới đã được cập nhật",
 );

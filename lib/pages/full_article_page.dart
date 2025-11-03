@@ -72,6 +72,7 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
               child: Image(
                 image: AssetImage("assets/app_icon.png"),
                 height: 30,
+                color: currentTheme.currentColorScheme.bgInverse,
               ),
             ),
             Flexible(

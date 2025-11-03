@@ -2,6 +2,7 @@ import 'package:centranews/models/app_info.dart';
 import 'package:centranews/utils/custom_navigator_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:localstorage/localstorage.dart';
@@ -12,6 +13,9 @@ void main() async {
   if (!kIsWeb) {
     await MobileAds.instance.initialize();
   }
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(statusBarColor: Colors.black),
+  );
   await initLocalStorage();
   await Supabase.initialize(
     url: 'https://abugihnaowqdwntoervn.supabase.co',

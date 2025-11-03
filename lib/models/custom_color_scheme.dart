@@ -34,10 +34,10 @@ final lightTheme = CustomColorScheme(
 
 final darkTheme = CustomColorScheme(
   themeType: ThemeBrightness.dark,
-  bgPrimary: Colors.black,
-  bgSecondary: const Color.fromARGB(255, 237, 234, 234),
-  bgInverse: Colors.white,
-  textPrimary: Colors.white,
-  textSecondary: const Color.fromARGB(255, 194, 194, 194),
-  textInverse: Colors.black,
+  bgPrimary: const Color.fromARGB(255, 37, 35, 35),
+  bgSecondary: const Color.fromARGB(255, 112, 121, 140),
+  bgInverse: const Color.fromARGB(255, 245, 241, 237),
+  textPrimary: const Color.fromARGB(255, 245, 241, 237),
+  textSecondary: const Color.fromARGB(255, 112, 121, 140),
+  textInverse: const Color.fromARGB(255, 37, 35, 35),
 );

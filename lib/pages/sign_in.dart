@@ -84,7 +84,11 @@ class _SignInState extends ConsumerState<SignIn> {
     return Column(
       children: [
         SizedBox(height: 80),
-        Image(image: AssetImage("assets/app_icon.png"), height: 150),
+        Image(
+          image: AssetImage("assets/app_icon.png"),
+          height: 150,
+          color: currentTheme.currentColorScheme.bgInverse,
+        ),
         SizedBox(height: 10),
         Text(
           localization.welcome,

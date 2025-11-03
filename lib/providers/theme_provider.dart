@@ -3,12 +3,12 @@ import 'package:centranews/models/custom_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final themeProvider = NotifierProvider<ThemeNotifier, CustomTheme>(
-      () => ThemeNotifier(),
+  () => ThemeNotifier(),
 );
 
 class ThemeNotifier extends Notifier<CustomTheme> {
   @override
   CustomTheme build() {
-    return CustomTheme(currentColorScheme: lightTheme);
+    return CustomTheme(currentColorScheme: darkTheme);
   }
 }

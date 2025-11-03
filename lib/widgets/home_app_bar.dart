@@ -90,7 +90,11 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
         spacing: 5,
         children: [
           Flexible(
-            child: Image(image: AssetImage("assets/app_icon.png"), height: 30),
+            child: Image(
+              image: AssetImage("assets/app_icon.png"),
+              height: 30,
+              color: currentTheme.currentColorScheme.textPrimary,
+            ),
           ),
           Flexible(
             child: Text(

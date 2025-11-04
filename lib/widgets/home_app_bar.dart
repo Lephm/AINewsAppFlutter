@@ -83,7 +83,7 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget appIcon(WidgetRef ref) {
     var currentTheme = ref.watch(themeProvider);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -99,7 +99,7 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
           Flexible(
             child: Text(
               AppInfo.title,
-              style: currentTheme.textTheme.headlineMedium,
+              style: currentTheme.textTheme.appBarLogoStyle,
               textAlign: TextAlign.justify,
             ),
           ),

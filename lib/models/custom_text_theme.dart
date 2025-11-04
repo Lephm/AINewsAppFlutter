@@ -80,6 +80,12 @@ class CustomTextTheme {
     );
   }
 
+  TextStyle get appBarLogoStyle {
+    return GoogleFonts.rubik(
+      textStyle: TextStyle(fontSize: 20, color: currentColorScheme.textPrimary),
+    );
+  }
+
   TextStyle get hyperlinkSourceStyle {
     return GoogleFonts.rubik(
       textStyle: TextStyle(fontSize: 15, color: currentColorScheme.textPrimary),

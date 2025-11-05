@@ -49,6 +49,10 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(containerBorderRadius),
         color: currentTheme.currentColorScheme.bgPrimary,
+        border: Border.all(
+          width: 0.2,
+          color: currentTheme.currentColorScheme.bgInverse,
+        ),
       ),
       width: 600,
       height: Pagination.mainAxisExtendHeight,

@@ -18,6 +18,8 @@ class OnBoardingPage extends ConsumerStatefulWidget {
 class _OnBoardingPageState extends ConsumerState<OnBoardingPage> {
   int currentPageIndex = 0;
   final PageController _pageController = PageController();
+  bool _imageVisible = false;
+  Offset _offset = Offset(0, 50);
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,9 @@ class _OnBoardingPageState extends ConsumerState<OnBoardingPage> {
         body: PageView(
           controller: _pageController,
           children: <Widget>[introductionPage(), finalPage()],
+          onPageChanged: (index) {
+            saveHasLoadedOnBoardingPage();
+          },
         ),
       ),
     );
@@ -37,32 +42,56 @@ class _OnBoardingPageState extends ConsumerState<OnBoardingPage> {
     localStorage.setItem("hasLoadedOnboarding", "true");
   }
 
+  void toggleAnimation() async {
+    if (!_imageVisible) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      setState(() {
+        _imageVisible = true;
+      });
+    }
+    if (_offset.dy != 0) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      setState(() {
+        _offset = Offset.zero;
+      });
+    }
+  }
+
   Widget introductionPage() {
     var localization = ref.watch(localizationProvider);
+    toggleAnimation();
     return Center(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            appIntroWidget(),
-            Container(
-              constraints: BoxConstraints(maxWidth: 500),
-              padding: const EdgeInsets.symmetric(horizontal: 9.0),
-              child: CustomFormButton(
-                onPressed: () {
-                  saveHasLoadedOnBoardingPage();
-                  setState(() {
-                    currentPageIndex = 1;
-                  });
-                  if (_pageController.hasClients) {
-                    _pageController.animateToPage(
-                      1,
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeInOut,
-                    );
-                  }
-                },
-                content: localization.gettingStarted,
+            AnimatedOpacity(
+              opacity: _imageVisible ? 1.0 : 0.0,
+              duration: const Duration(seconds: 3),
+              child: appIntroWidget(),
+            ),
+            AnimatedSlide(
+              offset: _offset,
+              duration: const Duration(milliseconds: 1000),
+              curve: Curves.easeInOut,
+              child: Container(
+                constraints: BoxConstraints(maxWidth: 500),
+                padding: const EdgeInsets.symmetric(horizontal: 9.0),
+                child: CustomFormButton(
+                  onPressed: () {
+                    setState(() {
+                      currentPageIndex = 1;
+                    });
+                    if (_pageController.hasClients) {
+                      _pageController.animateToPage(
+                        1,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                  },
+                  content: localization.gettingStarted,
+                ),
               ),
             ),
           ],

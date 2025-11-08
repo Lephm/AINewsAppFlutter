@@ -12,6 +12,7 @@ import 'package:centranews/widgets/custom_safe_area.dart';
 import 'package:centranews/widgets/home_app_bar.dart';
 import 'package:centranews/widgets/home_drawer.dart';
 import 'package:centranews/widgets/home_end_drawer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localstorage/localstorage.dart';
@@ -36,12 +37,21 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (dontNeedToShowOnBoardingPage()) {
+      return displayHomePage();
+    }
     loadOnboardingStateFromLocalStorage();
     return isLoadingOnbardingState
         ? circularProgressBarPage()
         : hasLoadedOnboardingState
         ? displayHomePage()
         : OnBoardingPage();
+  }
+
+  bool dontNeedToShowOnBoardingPage() {
+    //TODO: return true if its on web
+    //return kIsWeb;
+    return false;
   }
 
   Widget displayHomePage() {

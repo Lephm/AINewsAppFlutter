@@ -3,6 +3,7 @@ import 'package:centranews/models/language_localization.dart';
 import 'package:centranews/pages/bookmarks_page.dart';
 import 'package:centranews/pages/discover_page.dart';
 import 'package:centranews/pages/news_page.dart';
+import 'package:centranews/pages/on_boarding_page.dart';
 import 'package:centranews/providers/localization_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
 import 'package:centranews/widgets/banner_ad_container.dart';
@@ -13,6 +14,7 @@ import 'package:centranews/widgets/home_drawer.dart';
 import 'package:centranews/widgets/home_end_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localstorage/localstorage.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -23,6 +25,8 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   int currentPageIndex = 0;
+  bool hasLoadedOnboardingState = false;
+  bool isLoadingOnbardingState = true;
   final List<Widget> _pages = [
     const NewsPage(),
     const DiscoverPage(),
@@ -32,6 +36,15 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    loadOnboardingStateFromLocalStorage();
+    return isLoadingOnbardingState
+        ? circularProgressBarPage()
+        : hasLoadedOnboardingState
+        ? displayHomePage()
+        : OnBoardingPage();
+  }
+
+  Widget displayHomePage() {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
     if (currentPageHeaderText == "") {
@@ -66,6 +79,28 @@ class _HomePageState extends ConsumerState<HomePage> {
     });
   }
 
+  void loadOnboardingStateFromLocalStorage() {
+    if (hasLoadedOnboardingState) {
+      return;
+    }
+    var hasLoadedOnboarding = localStorage.getItem("hasLoadedOnboarding");
+    if (!mounted) {
+      return;
+    }
+    if (hasLoadedOnboarding == null || hasLoadedOnboarding == "false") {
+      setState(() {
+        hasLoadedOnboardingState = false;
+      });
+    } else {
+      setState(() {
+        hasLoadedOnboardingState = true;
+      });
+    }
+    setState(() {
+      isLoadingOnbardingState = false;
+    });
+  }
+
   void setPageHeader(int index, LanguageLocalizationTexts localization) {
     String newHeaderText = "";
     switch (currentPageIndex) {
@@ -84,5 +119,18 @@ class _HomePageState extends ConsumerState<HomePage> {
     setState(() {
       currentPageHeaderText = newHeaderText;
     });
+  }
+
+  Widget circularProgressBarPage() {
+    var currentTheme = ref.watch(themeProvider);
+    return Scaffold(
+      backgroundColor: currentTheme.currentColorScheme.bgPrimary,
+      body: Center(
+        child: CircularProgressIndicator(
+          color: currentTheme.currentColorScheme.bgInverse,
+          backgroundColor: currentTheme.currentColorScheme.bgPrimary,
+        ),
+      ),
+    );
   }
 }

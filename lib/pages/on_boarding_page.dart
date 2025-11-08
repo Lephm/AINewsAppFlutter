@@ -19,6 +19,7 @@ class _OnBoardingPageState extends ConsumerState<OnBoardingPage> {
   int currentPageIndex = 0;
   final PageController _pageController = PageController();
   bool _imageVisible = false;
+  bool _thumbnailVisible = false;
   Offset _offset = Offset(0, 50);
 
   @override
@@ -44,9 +45,15 @@ class _OnBoardingPageState extends ConsumerState<OnBoardingPage> {
 
   void toggleAnimation() async {
     if (!_imageVisible) {
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 400));
       setState(() {
         _imageVisible = true;
+      });
+    }
+    if (!_thumbnailVisible) {
+      await Future.delayed(const Duration(milliseconds: 300));
+      setState(() {
+        _thumbnailVisible = true;
       });
     }
     if (_offset.dy != 0) {
@@ -59,16 +66,26 @@ class _OnBoardingPageState extends ConsumerState<OnBoardingPage> {
 
   Widget introductionPage() {
     var localization = ref.watch(localizationProvider);
+    var currentTheme = ref.watch(themeProvider);
     toggleAnimation();
     return Center(
       child: SingleChildScrollView(
         child: Column(
+          spacing: 10,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             AnimatedOpacity(
               opacity: _imageVisible ? 1.0 : 0.0,
               duration: const Duration(seconds: 2),
               child: appIntroWidget(),
+            ),
+            AnimatedOpacity(
+              opacity: _thumbnailVisible ? 1.0 : 0.0,
+              duration: const Duration(seconds: 2),
+              child: Image(
+                image: AssetImage("assets/app_thumbnail.png"),
+                height: 300,
+              ),
             ),
             AnimatedSlide(
               offset: _offset,
@@ -107,7 +124,7 @@ class _OnBoardingPageState extends ConsumerState<OnBoardingPage> {
         children: [
           Image(
             image: AssetImage("assets/app_logo.png"),
-            height: 300,
+            width: 300,
             color: currentTheme.currentColorScheme.bgInverse,
           ),
         ],

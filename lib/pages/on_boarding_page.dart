@@ -1,3 +1,4 @@
+import 'package:centranews/widgets/fade_animation_wrapper.dart';
 import 'package:centranews/widgets/custom_form_button.dart';
 import 'package:centranews/widgets/custom_form_button_outline_style.dart';
 import 'package:centranews/widgets/custom_safe_area.dart';
@@ -66,7 +67,6 @@ class _OnBoardingPageState extends ConsumerState<OnBoardingPage> {
 
   Widget introductionPage() {
     var localization = ref.watch(localizationProvider);
-    var currentTheme = ref.watch(themeProvider);
     toggleAnimation();
     return Center(
       child: SingleChildScrollView(
@@ -139,35 +139,44 @@ class _OnBoardingPageState extends ConsumerState<OnBoardingPage> {
         child: Column(
           spacing: 30,
           children: [
-            appIntroWidget(),
-            Container(
-              constraints: BoxConstraints(maxWidth: 500),
-              padding: const EdgeInsets.symmetric(horizontal: 9.0),
-              child: CustomFormButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed("/sign_up");
-                },
-                content: localization.signUp,
+            FadeAnimationWrapper(index: 1, child: appIntroWidget()),
+            FadeAnimationWrapper(
+              index: 2,
+              child: Container(
+                constraints: BoxConstraints(maxWidth: 500),
+                padding: const EdgeInsets.symmetric(horizontal: 9.0),
+                child: CustomFormButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed("/sign_up");
+                  },
+                  content: localization.signUp,
+                ),
               ),
             ),
-            Container(
-              constraints: BoxConstraints(maxWidth: 500),
-              padding: const EdgeInsets.symmetric(horizontal: 9.0),
-              child: CustomFormButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed("/sign_in");
-                },
-                content: localization.signIn,
+            FadeAnimationWrapper(
+              index: 3,
+              child: Container(
+                constraints: BoxConstraints(maxWidth: 500),
+                padding: const EdgeInsets.symmetric(horizontal: 9.0),
+                child: CustomFormButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed("/sign_in");
+                  },
+                  content: localization.signIn,
+                ),
               ),
             ),
-            Container(
-              constraints: BoxConstraints(maxWidth: 500),
-              padding: const EdgeInsets.symmetric(horizontal: 9.0),
-              child: CustomFormButtonOutlineStyle(
-                onPressed: () {
-                  Navigator.of(context).pushReplacementNamed("/");
-                },
-                content: localization.skip,
+            FadeAnimationWrapper(
+              index: 4,
+              child: Container(
+                constraints: BoxConstraints(maxWidth: 500),
+                padding: const EdgeInsets.symmetric(horizontal: 9.0),
+                child: CustomFormButtonOutlineStyle(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacementNamed("/");
+                  },
+                  content: localization.skip,
+                ),
               ),
             ),
           ],

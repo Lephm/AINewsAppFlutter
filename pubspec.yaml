@@ -42,6 +42,8 @@ dependencies:
   localstorage: ^6.0.0
   google_mobile_ads: ^6.0.0
   flutter_launcher_icons: ^0.14.4
+  animate_do: ^4.2.0
+  flutter_native_splash: ^2.4.7
 
 dev_dependencies:
   flutter_test:
@@ -107,3 +109,14 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_native_splash:
+  color: "#252323"
+  color_dark: "#252323"
+  android: true
+  ios: true
+  web: true
+  android_12:
+    color: "#252323"
+    color_dark: "#252323"
+    icon_background_color: "#252323"
+    icon_background_color_dark: "#252323"

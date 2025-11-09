@@ -30,6 +30,7 @@ class ArticleContainer extends ConsumerStatefulWidget {
 
 class _ArticleContainer extends ConsumerState<ArticleContainer> {
   bool isBookmarked = false;
+  bool cantLoadImage = false;
 
   @override
   void initState() {
@@ -129,11 +130,19 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
           borderRadius: BorderRadius.circular(containerBorderRadius),
           child: Image.network(
             widget.articleData.thumbnailUrl,
-            errorBuilder: (context, error, stackTrace) =>
-                displayThumbnailErrorWidget(),
+            errorBuilder: (context, error, stackTrace) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted && !cantLoadImage) {
+                  setState(() {
+                    cantLoadImage = true;
+                  });
+                }
+              });
+              return displayThumbnailErrorWidget();
+            },
             width: double.infinity,
             height: thumbnailImageHeight,
-            fit: BoxFit.cover,
+            fit: BoxFit.scaleDown,
           ),
         ),
       ),
@@ -141,18 +150,7 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
   }
 
   Widget displayThumbnailErrorWidget() {
-    var currentTheme = ref.watch(themeProvider);
-    return SizedBox(
-      width: double.infinity,
-      height: thumbnailImageHeight,
-      child: Center(
-        child: Icon(
-            Icons.broken_image_outlined,
-            color: currentTheme.currentColorScheme.bgInverse,
-            size: 40
-        ),
-      ),
-    );
+    return SizedBox(width: double.infinity, height: 40);
   }
 
   Widget displayPublishedDate() {
@@ -250,13 +248,13 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
       },
       icon: (isBookmarked && (localUser != null))
           ? Icon(
-        Icons.bookmark,
-        color: currentTheme.currentColorScheme.bgInverse,
-      )
+              Icons.bookmark,
+              color: currentTheme.currentColorScheme.bgInverse,
+            )
           : Icon(
-        Icons.bookmarks_outlined,
-        color: currentTheme.currentColorScheme.bgInverse,
-      ),
+              Icons.bookmarks_outlined,
+              color: currentTheme.currentColorScheme.bgInverse,
+            ),
     );
   }
 
@@ -382,7 +380,7 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
           widget.articleData.articleSummary,
           style: currentTheme.textTheme.bodySmall,
           textAlign: TextAlign.start,
-          maxLines: 2,
+          maxLines: cantLoadImage ? 8 : 2,
           overflow: TextOverflow.fade,
         ),
       ),
@@ -436,37 +434,36 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
     var currentTheme = ref.watch(themeProvider);
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            backgroundColor: currentTheme.currentColorScheme.bgPrimary,
+      builder: (context) => AlertDialog(
+        backgroundColor: currentTheme.currentColorScheme.bgPrimary,
 
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                BackButton(
-                  color: currentTheme.currentColorScheme.bgInverse,
-                  style: ButtonStyle(alignment: Alignment(-1.0, -1.0)),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    try {
-                      await launchUrl(Uri.parse(widget.articleData.source));
-                    } catch (e) {
-                      debugPrint(e.toString());
-                    }
-                  },
-                  child: Icon(
-                    Icons.link,
-                    color: currentTheme.currentColorScheme.bgInverse,
-                  ),
-                ),
-              ],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            BackButton(
+              color: currentTheme.currentColorScheme.bgInverse,
+              style: ButtonStyle(alignment: Alignment(-1.0, -1.0)),
             ),
-            content: Text(
-              widget.articleData.source,
-              style: currentTheme.textTheme.bodyMedium,
+            TextButton(
+              onPressed: () async {
+                try {
+                  await launchUrl(Uri.parse(widget.articleData.source));
+                } catch (e) {
+                  debugPrint(e.toString());
+                }
+              },
+              child: Icon(
+                Icons.link,
+                color: currentTheme.currentColorScheme.bgInverse,
+              ),
             ),
-          ),
+          ],
+        ),
+        content: Text(
+          widget.articleData.source,
+          style: currentTheme.textTheme.bodyMedium,
+        ),
+      ),
     );
   }
 }

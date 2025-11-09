@@ -49,8 +49,8 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
         body: _isLoading
             ? displayCircularProgressBar()
             : ((articleData == null)
-                  ? displayErrorPage()
-                  : displayArticlePage()),
+            ? displayErrorPage()
+            : displayArticlePage()),
       ),
     );
   }
@@ -287,9 +287,9 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
     var currentTheme = ref.watch(themeProvider);
     return (relatedArticles.isEmpty)
         ? Text(
-            localization.cantFindRelevantArticles,
-            style: currentTheme.textTheme.bodyMediumBold,
-          )
+      localization.cantFindRelevantArticles,
+      style: currentTheme.textTheme.bodyMediumBold,
+    )
         : displayRelatedArticles();
   }
 
@@ -339,8 +339,9 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
       height: thumbnailImageHeight,
       child: Center(
         child: Icon(
-          Icons.broken_image_outlined,
-          color: currentTheme.currentColorScheme.bgInverse,
+            Icons.broken_image_outlined,
+            color: currentTheme.currentColorScheme.bgInverse, size: 50
+
         ),
       ),
     );

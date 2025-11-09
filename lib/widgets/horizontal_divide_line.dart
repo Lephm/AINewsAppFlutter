@@ -10,8 +10,8 @@ class HorizontalDivideLine extends ConsumerWidget {
     required this.horizontalMargin,
   });
 
-  final height;
-  final horizontalMargin;
+  final double height;
+  final double horizontalMargin;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

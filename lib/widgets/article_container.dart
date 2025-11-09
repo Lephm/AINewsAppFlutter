@@ -131,13 +131,15 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
           child: Image.network(
             widget.articleData.thumbnailUrl,
             errorBuilder: (context, error, stackTrace) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (mounted && !cantLoadImage) {
-                  setState(() {
-                    cantLoadImage = true;
-                  });
-                }
-              });
+              if (!cantLoadImage) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) {
+                    setState(() {
+                      cantLoadImage = true;
+                    });
+                  }
+                });
+              }
               return displayThumbnailErrorWidget();
             },
             width: double.infinity,

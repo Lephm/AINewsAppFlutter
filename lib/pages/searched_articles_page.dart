@@ -104,7 +104,7 @@ class _SearchedArticlesPageState extends ConsumerState<SearchedArticlesPage>
                 }
                 return ArticleContainer(
                   articleData: searchedArticles[index],
-                  key: UniqueKey(),
+                  key: ValueKey(searchedArticles[index].articleID),
                 );
               } catch (e) {
                 return displayCircularProgressBar(currentTheme);

@@ -296,7 +296,12 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
   Widget displayRelatedArticles() {
     List<ArticleContainer> articles = [];
     for (var article in relatedArticles) {
-      articles.add(ArticleContainer(articleData: article));
+      articles.add(
+        ArticleContainer(
+          articleData: article,
+          key: ValueKey(article.articleID),
+        ),
+      );
     }
     return Column(spacing: 30, children: articles);
   }

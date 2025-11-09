@@ -70,7 +70,7 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage> with Pagination {
                       }
                       return ArticleContainer(
                         articleData: discoveredArticles[index],
-                        key: UniqueKey(),
+                        key: ValueKey(discoveredArticles[index].articleID),
                       );
                     } catch (e) {
                       return displayCircularProgressBar(currentTheme);

@@ -87,7 +87,7 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
                       }
                       return ArticleContainer(
                         articleData: mainArticles[index],
-                        key: UniqueKey(),
+                        key: ValueKey(mainArticles[index].articleID),
                       );
                     } catch (e) {
                       return displayCircularProgressBar(currentTheme);

@@ -77,30 +77,34 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
       return;
     }
     try {
+      if (mounted) {
+        showProgressBar(context, currentTheme);
+      }
       if (isBookmarked) {
-        BookmarkManager.removeArticleIdFromBookmark(
+        await BookmarkManager.removeArticleIdFromBookmark(
           localUser.uid,
           articleData!.articleID,
         );
       } else {
-        BookmarkManager.addArticleIdToBookmark(
+        await BookmarkManager.addArticleIdToBookmark(
           localUser.uid,
           articleData!.articleID,
         );
       }
-      loadBookmarkState();
+      await loadBookmarkState();
     } catch (e) {
       debugPrint(e.toString());
+    } finally {
+      if (mounted) {
+        closeProgressBar(context);
+      }
     }
   }
 
-  void loadBookmarkState() async {
-    var currentTheme = ref.watch(themeProvider);
+  Future<void> loadBookmarkState() async {
     try {
       if (supabase.auth.currentUser == null) return;
-      if (mounted) {
-        showProgressBar(context, currentTheme);
-      }
+
       var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
         supabase.auth.currentUser!.id,
         articleData!.articleID,
@@ -112,10 +116,6 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
       }
     } catch (e) {
       debugPrint(e.toString());
-    } finally {
-      if (mounted) {
-        closeProgressBar(context);
-      }
     }
   }
 
@@ -132,7 +132,11 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
           forceMaterialTransparency: true,
           backgroundColor: currentTheme.currentColorScheme.bgPrimary,
           leading: BackButton(color: currentTheme.currentColorScheme.bgInverse),
-          actions: [bookmarkButton()],
+          actions: [
+            (_isLoading || articleData == null)
+                ? SizedBox.shrink()
+                : bookmarkButton(),
+          ],
           title: Center(child: appIcon()),
         ),
         backgroundColor: currentTheme.currentColorScheme.bgPrimary,

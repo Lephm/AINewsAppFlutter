@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../utils/full_screen_overlay_progress_bar.dart';
 import '../utils/pagination.dart';
 
 const double containerBorderRadius = 10;
@@ -29,23 +30,15 @@ class ArticleContainer extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _ArticleContainer();
 }
 
-class _ArticleContainer extends ConsumerState<ArticleContainer> {
+class _ArticleContainer extends ConsumerState<ArticleContainer>
+    with FullScreenOverlayProgressBar {
   bool isBookmarked = false;
   bool cantLoadImage = false;
 
   @override
-  void initState() {
-    super.initState();
-    supabase.auth.onAuthStateChange.listen((data) {
-      if (supabase.auth.currentUser != null) {
-        loadBookmarkStateStartUp(supabase.auth.currentUser!.id);
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     var currentTheme = ref.watch(themeProvider);
+    loadBookmarkStateStartUp();
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       padding: EdgeInsetsGeometry.fromLTRB(0, 10, 0, 0),
@@ -261,9 +254,10 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
     );
   }
 
-  void loadBookmarkStateStartUp(String userId) async {
+  void loadBookmarkStateStartUp() async {
+    if (supabase.auth.currentUser == null) return;
     var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
-      userId,
+      supabase.auth.currentUser!.id,
       widget.articleData.articleID,
     );
     if (mounted) {
@@ -287,20 +281,40 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
           localUser.uid,
           widget.articleData.articleID,
         );
-        setState(() {
-          isBookmarked = false;
-        });
       } else {
         BookmarkManager.addArticleIdToBookmark(
           localUser.uid,
           widget.articleData.articleID,
         );
+      }
+      loadBookmarkState();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  void loadBookmarkState() async {
+    var currentTheme = ref.watch(themeProvider);
+    try {
+      if (supabase.auth.currentUser == null) return;
+      if (mounted) {
+        showProgressBar(context, currentTheme);
+      }
+      var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
+        supabase.auth.currentUser!.id,
+        widget.articleData.articleID,
+      );
+      if (mounted) {
         setState(() {
-          isBookmarked = true;
+          isBookmarked = articleIsBookmarked;
         });
       }
     } catch (e) {
       debugPrint(e.toString());
+    } finally {
+      if (mounted) {
+        closeProgressBar(context);
+      }
     }
   }
 

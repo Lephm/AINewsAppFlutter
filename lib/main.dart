@@ -31,6 +31,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
+      theme: ThemeData(hoverColor: Colors.transparent),
       title: AppInfo.title,
       initialRoute: CustomNavigatorSettings.initialRoute,
       routes: CustomNavigatorSettings.allRoutes,

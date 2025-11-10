@@ -1,5 +1,6 @@
 import 'package:centranews/models/article_data.dart';
 import 'package:centranews/utils/format_string_helper.dart';
+import 'package:centranews/utils/full_screen_overlay_progress_bar.dart';
 import 'package:centranews/widgets/article_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,8 +8,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/app_info.dart';
+import '../providers/local_user_provider.dart';
 import '../providers/localization_provider.dart';
 import '../providers/theme_provider.dart';
+import '../utils/bookmark_manager.dart';
+import '../utils/pop_up_message.dart';
 import '../widgets/article_label.dart';
 import '../widgets/custom_safe_area.dart';
 
@@ -24,11 +28,96 @@ class FullArticlePage extends ConsumerStatefulWidget {
   ConsumerState<FullArticlePage> createState() => _FullArticlePageState();
 }
 
-class _FullArticlePageState extends ConsumerState<FullArticlePage> {
+class _FullArticlePageState extends ConsumerState<FullArticlePage>
+    with FullScreenOverlayProgressBar {
   String articleID = "";
   bool _isLoading = true;
   ArticleData? articleData;
   List<ArticleData> relatedArticles = [];
+  bool isBookmarked = false;
+
+  Future<void> loadBookmarkStateStartUp() async {
+    if (supabase.auth.currentUser == null) return;
+    var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
+      supabase.auth.currentUser!.id,
+      articleData!.articleID,
+    );
+    if (mounted) {
+      setState(() {
+        isBookmarked = articleIsBookmarked;
+      });
+    }
+  }
+
+  Widget bookmarkButton() {
+    var currentTheme = ref.watch(themeProvider);
+    var localUser = ref.watch(userProvider);
+    return IconButton(
+      onPressed: () {
+        toggleBookmark();
+      },
+      icon: (isBookmarked && (localUser != null))
+          ? Icon(
+              Icons.bookmark,
+              color: currentTheme.currentColorScheme.bgInverse,
+            )
+          : Icon(
+              Icons.bookmarks_outlined,
+              color: currentTheme.currentColorScheme.bgInverse,
+            ),
+    );
+  }
+
+  void toggleBookmark() async {
+    var currentTheme = ref.watch(themeProvider);
+    var localization = ref.watch(localizationProvider);
+    var localUser = ref.watch(userProvider);
+    if (localUser == null) {
+      showSignInPrompt(context, currentTheme, localization);
+      return;
+    }
+    try {
+      if (isBookmarked) {
+        BookmarkManager.removeArticleIdFromBookmark(
+          localUser.uid,
+          articleData!.articleID,
+        );
+      } else {
+        BookmarkManager.addArticleIdToBookmark(
+          localUser.uid,
+          articleData!.articleID,
+        );
+      }
+      loadBookmarkState();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  void loadBookmarkState() async {
+    var currentTheme = ref.watch(themeProvider);
+    try {
+      if (supabase.auth.currentUser == null) return;
+      if (mounted) {
+        showProgressBar(context, currentTheme);
+      }
+      var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
+        supabase.auth.currentUser!.id,
+        articleData!.articleID,
+      );
+      if (mounted) {
+        setState(() {
+          isBookmarked = articleIsBookmarked;
+        });
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      if (mounted) {
+        closeProgressBar(context);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +132,7 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
           forceMaterialTransparency: true,
           backgroundColor: currentTheme.currentColorScheme.bgPrimary,
           leading: BackButton(color: currentTheme.currentColorScheme.bgInverse),
-          actions: [homeIcon()],
+          actions: [bookmarkButton()],
           title: Center(child: appIcon()),
         ),
         backgroundColor: currentTheme.currentColorScheme.bgPrimary,
@@ -86,16 +175,6 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget homeIcon() {
-    var currentTheme = ref.watch(themeProvider);
-    return IconButton(
-      onPressed: () {
-        Navigator.of(context).pushNamed("/");
-      },
-      icon: Icon(Icons.home, color: currentTheme.currentColorScheme.bgInverse),
     );
   }
 
@@ -330,6 +409,7 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
       setState(() {
         articleData = ArticleData.fromJson(data);
       });
+      await loadBookmarkStateStartUp();
     } catch (e) {
       debugPrint(e.toString());
     } finally {

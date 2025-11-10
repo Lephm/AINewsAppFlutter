@@ -4,6 +4,7 @@ import 'package:centranews/providers/localization_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
 import 'package:centranews/utils/bookmark_manager.dart';
 import 'package:centranews/utils/custom_navigator_settings.dart';
+import 'package:centranews/utils/format_string_helper.dart';
 import 'package:centranews/utils/pop_up_message.dart';
 import 'package:centranews/widgets/article_label.dart';
 import 'package:flutter/material.dart';
@@ -368,6 +369,9 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
 
   Widget displaySummaryText() {
     var currentTheme = ref.watch(themeProvider);
+    var formattedSummaryText = formatSummaryText(
+      widget.articleData.articleSummary,
+    );
     return TextButton(
       onPressed: () {
         goToFullArticlePage();
@@ -379,7 +383,7 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
           horizontal: containerHorizontalLabelPadding,
         ),
         child: Text(
-          widget.articleData.articleSummary,
+          formattedSummaryText,
           style: currentTheme.textTheme.bodySmall,
           textAlign: TextAlign.start,
           maxLines: cantLoadImage ? 6 : 2,

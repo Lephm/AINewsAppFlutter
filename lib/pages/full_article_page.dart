@@ -1,4 +1,5 @@
 import 'package:centranews/models/article_data.dart';
+import 'package:centranews/utils/format_string_helper.dart';
 import 'package:centranews/widgets/article_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -174,6 +175,7 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
   Widget displayCurrentArticle() {
     var currentTheme = ref.watch(themeProvider);
     var localization = ref.watch(localizationProvider);
+    var formattedSummaryText = formatSummaryText(articleData!.articleSummary);
     return Center(
       child: Container(
         decoration: BoxDecoration(
@@ -231,7 +233,7 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage> {
               ),
             ),
             Text(
-              articleData!.articleSummary,
+              formattedSummaryText,
               style: currentTheme.textTheme.bodySmall,
               textAlign: TextAlign.justify,
             ),

@@ -27,21 +27,21 @@ class _ForYouPageState extends ConsumerState<ForYouPage> with Pagination {
   final ScrollController scrollController = ScrollController();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  List<String> forYouQueryParams = defaultForYouQueryParams;
+  List<String>? forYouQueryParams;
 
   @override
   void initState() {
     super.initState();
-    refreshForYouArticles();
+    loadForYouQueryParams();
   }
 
   @override
   Widget build(BuildContext context) {
     scrollController.addListener(onScroll);
-    supabase.auth.onAuthStateChange.listen((data) async {
-      loadForYouQueryParams();
-    });
-    return forYouPage();
+    var currentTheme = ref.watch(themeProvider);
+    return (forYouQueryParams == null || forYouArticles.isEmpty)
+        ? displayCircularProgressBar(currentTheme)
+        : forYouPage();
   }
 
   Future<void> loadForYouQueryParams() async {
@@ -57,10 +57,13 @@ class _ForYouPageState extends ConsumerState<ForYouPage> with Pagination {
       if (supabase.auth.currentUser == null) {
         hasLoadCurrentUserPreferedCategory = false;
       }
-      if (mounted && forYouQueryParams != defaultForYouQueryParams) {
+      if (mounted &&
+          forYouQueryParams != defaultForYouQueryParams &&
+          forYouQueryParams == null) {
         setState(() {
           forYouQueryParams = defaultForYouQueryParams;
         });
+        refreshForYouArticles();
       }
     }
   }
@@ -77,18 +80,19 @@ class _ForYouPageState extends ConsumerState<ForYouPage> with Pagination {
           .limit(2);
       List<String> userPreferedCategoryResponse = [];
       for (var value in data) {
-        if (categories.contains(value["category"].toString())) ;
-        userPreferedCategoryResponse.add(value["category"].toString());
-        debugPrint(userPreferedCategoryResponse.toString());
+        if (categories.contains(value["category"].toString())) {
+          userPreferedCategoryResponse.add(value["category"].toString());
+          debugPrint(userPreferedCategoryResponse.toString());
+        }
       }
       if (mounted) {
         setState(() {
           forYouQueryParams = userPreferedCategoryResponse;
         });
       }
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (mounted) {
-          refreshForYouArticles();
+          await refreshForYouArticles();
         }
         refreshDataIfCantFindArticlesBasedOnUserPreferedQueryCategories();
       });
@@ -99,7 +103,7 @@ class _ForYouPageState extends ConsumerState<ForYouPage> with Pagination {
 
   void refreshDataIfCantFindArticlesBasedOnUserPreferedQueryCategories() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && forYouArticles.length == 0) {
+      if (mounted && forYouArticles.isEmpty) {
         setState(() {
           forYouQueryParams = defaultForYouQueryParams;
         });
@@ -164,6 +168,7 @@ class _ForYouPageState extends ConsumerState<ForYouPage> with Pagination {
   @override
   void dispose() {
     scrollController.dispose();
+    hasLoadCurrentUserPreferedCategory = false;
     super.dispose();
   }
 
@@ -222,12 +227,12 @@ class _ForYouPageState extends ConsumerState<ForYouPage> with Pagination {
     return supabase
         .from('articles')
         .select()
-        .contains('categories', forYouQueryParams)
+        .contains('categories', forYouQueryParams ?? defaultForYouQueryParams)
         .order('created_at', ascending: false)
         .range(startIndex, endIndex);
   }
 
-  void refreshForYouArticles() async {
+  Future<void> refreshForYouArticles() async {
     if (mounted) {
       setState(() {
         resetCurrentPage();

@@ -164,7 +164,6 @@ class _ForYouPageState extends ConsumerState<ForYouPage> with Pagination {
   @override
   void dispose() {
     scrollController.dispose();
-    hasLoadCurrentUserPreferedCategory = false;
     super.dispose();
   }
 

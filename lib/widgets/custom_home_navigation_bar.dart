@@ -2,7 +2,6 @@ import 'package:centranews/models/language_localization.dart';
 import 'package:centranews/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../providers/localization_provider.dart';
 
 const double navigationBarIconSize = 20;

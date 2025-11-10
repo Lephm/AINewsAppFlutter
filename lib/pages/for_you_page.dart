@@ -57,7 +57,7 @@ class _ForYouPageState extends ConsumerState<ForYouPage> with Pagination {
       if (supabase.auth.currentUser == null) {
         hasLoadCurrentUserPreferedCategory = false;
       }
-      if (mounted) {
+      if (mounted && forYouQueryParams != defaultForYouQueryParams) {
         setState(() {
           forYouQueryParams = defaultForYouQueryParams;
         });

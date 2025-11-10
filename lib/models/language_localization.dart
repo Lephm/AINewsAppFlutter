@@ -78,6 +78,7 @@ class LanguageLocalizationTexts {
     required this.introText,
     required this.gettingStarted,
     required this.skip,
+    required this.forYou,
   });
 
   final String signIn;
@@ -129,6 +130,7 @@ class LanguageLocalizationTexts {
   final String introText;
   final String gettingStarted;
   final String skip;
+  final String forYou;
 
   //Categories label
   final String politics;
@@ -277,6 +279,7 @@ var engLocalization = const LanguageLocalizationTexts(
   introText: "AI powered News app",
   gettingStarted: "Getting Started",
   skip: "Skip",
+  forYou: "For You",
 );
 
 var vietLocalization = const LanguageLocalizationTexts(
@@ -357,4 +360,5 @@ var vietLocalization = const LanguageLocalizationTexts(
   introText: "Tin tức mới nhất",
   gettingStarted: "Bắt đầu",
   skip: "Bỏ qua",
+  forYou: "Cho bạn",
 );

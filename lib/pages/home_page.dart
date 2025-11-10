@@ -1,7 +1,7 @@
 import 'package:centranews/models/app_info.dart';
 import 'package:centranews/models/language_localization.dart';
 import 'package:centranews/pages/bookmarks_page.dart';
-import 'package:centranews/pages/discover_page.dart';
+import 'package:centranews/pages/for_you_page.dart';
 import 'package:centranews/pages/news_page.dart';
 import 'package:centranews/pages/on_boarding_page.dart';
 import 'package:centranews/providers/localization_provider.dart';
@@ -30,7 +30,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   bool isLoadingOnbardingState = true;
   final List<Widget> _pages = [
     const NewsPage(),
-    const DiscoverPage(),
+    const ForYouPage(),
     const BookmarksPage(),
   ];
   String currentPageHeaderText = "";
@@ -117,7 +117,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         newHeaderText = AppInfo.title;
         break;
       case 1:
-        newHeaderText = localization.discovery;
+        newHeaderText = localization.forYou;
         break;
       case 2:
         newHeaderText = localization.bookmarks;

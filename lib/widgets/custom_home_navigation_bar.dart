@@ -71,12 +71,17 @@ class _CustomHomeNavigationBarState
         label: localization.news,
       ),
       NavigationDestination(
-        icon: Icon(
-          Icons.explore,
+        selectedIcon: Icon(
+          Icons.reviews,
           color: currentTheme.currentColorScheme.bgInverse,
           size: navigationBarIconSize,
         ),
-        label: localization.discovery,
+        icon: Icon(
+          Icons.reviews_outlined,
+          color: currentTheme.currentColorScheme.bgInverse,
+          size: navigationBarIconSize,
+        ),
+        label: localization.forYou,
       ),
       NavigationDestination(
         icon: Icon(

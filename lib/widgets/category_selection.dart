@@ -4,6 +4,9 @@ import 'package:centranews/providers/theme_provider.dart';
 import 'package:centranews/widgets/horizontal_divide_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+final supabase = Supabase.instance.client;
 
 class CategorySelection extends ConsumerStatefulWidget {
   const CategorySelection({super.key, required this.category});
@@ -54,6 +57,7 @@ class _CategorySelectionState extends ConsumerState<CategorySelection> {
     });
     if (newValue) {
       queryCategoriesManager.addCategoryQuery(widget.category);
+      addCategoryToUserPref();
     } else {
       queryCategoriesManager.removeCategoryQuery(widget.category);
     }
@@ -69,6 +73,32 @@ class _CategorySelectionState extends ConsumerState<CategorySelection> {
       setState(() {
         _isChecked = false;
       });
+    }
+  }
+
+  Future<void> addCategoryToUserPref() async {
+    if (supabase.auth.currentUser == null) return;
+    try {
+      await supabase.from('user_prefered_category').insert({
+        'user_id': supabase.auth.currentUser!.id,
+        'category': widget.category,
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  //TODO: currently not using this incase user remove selection
+  Future<void> removeCategoryToUserPref() async {
+    if (supabase.auth.currentUser == null) return;
+    try {
+      await supabase
+          .from('user_prefered_category')
+          .delete()
+          .eq('user_id', supabase.auth.currentUser!.id)
+          .eq('category', widget.category);
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 }

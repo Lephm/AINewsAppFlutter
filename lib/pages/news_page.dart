@@ -21,7 +21,7 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
       GlobalKey<RefreshIndicatorState>();
   final ScrollController scrollController = ScrollController();
   bool hasFetchDataForTheFirstTime = false;
-  bool isRefreshing = true;
+  bool isRefreshing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
     }
     return cantFindRelevantArticles()
         ? displayCantFindRelevantArticles()
-        : (isRefreshing || !hasFetchDataForTheFirstTime)
+        : isRefreshing
         ? displayCircularProgressBar(currentTheme)
         : displayArticles();
   }

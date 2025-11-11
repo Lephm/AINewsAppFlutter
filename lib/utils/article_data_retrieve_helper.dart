@@ -1,11 +1,9 @@
 import 'package:centranews/models/article_data.dart';
 import 'package:flutter/material.dart';
 
-// this is just to make there are no duplicate article data
-List<ArticleData> getUniqueArticleDatas(
-  List<ArticleData> oldList,
-  List<ArticleData> newDataList,
-) {
+// TODO: this is just to make there are no duplicate article data, currently disabling this to improve performance
+List<ArticleData> getUniqueArticleDatas(List<ArticleData> oldList,
+    List<ArticleData> newDataList,) {
   List<ArticleData> newArticleDatas = [];
   newArticleDatas = [...oldList];
   var oldArticleDataIds = oldList.map((articleData) => articleData.articleID);

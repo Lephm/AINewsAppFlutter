@@ -22,11 +22,13 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
   final ScrollController scrollController = ScrollController();
   bool hasFetchDataForTheFirstTime = false;
   List<String> currentQueryCategories = [];
+  bool isRefreshing = true;
 
   @override
   Widget build(BuildContext context) {
     var mainArticles = ref.watch(mainArticlesProvider);
     var queryCategories = ref.watch(queryCategoriesProvider);
+    var currentTheme = ref.watch(themeProvider);
     scrollController.addListener(onScroll);
     if (currentQueryCategories != queryCategories) {
       refreshDataToRefelectSearchQueries();
@@ -42,6 +44,8 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
     }
     return cantFindRelevantArticles()
         ? displayCantFindRelevantArticles()
+        : isRefreshing
+        ? displayCircularProgressBar(currentTheme)
         : displayArticles();
   }
 
@@ -171,6 +175,7 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
         resetCurrentPage();
         hasFetchDataForTheFirstTime = true;
         isLoading = true;
+        isRefreshing = true;
       });
       try {
         await mainArticleNotifier.refereshArticlesData(
@@ -185,6 +190,7 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
           setState(() {
             hasFetchDataForTheFirstTime = true;
             isLoading = false;
+            isRefreshing = false;
           });
         }
       }

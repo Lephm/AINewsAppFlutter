@@ -105,6 +105,7 @@ class MainArticlesNotifier extends Notifier<List<ArticleData>> {
           .from('articles')
           .select()
           .order('created_at', ascending: false)
+          .order('article_id', ascending: true)
           .range(startIndex, endIndex);
     }
     return supabase
@@ -112,6 +113,7 @@ class MainArticlesNotifier extends Notifier<List<ArticleData>> {
         .select()
         .contains('categories', queryParams)
         .order('created_at', ascending: false)
+        .order('article_id', ascending: true)
         .range(startIndex, endIndex);
   }
 }

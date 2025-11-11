@@ -76,7 +76,8 @@ class BookmarkManager {
         .from('articles')
         .select()
         .inFilter("article_id", articleIdList)
-        .order('created_at', ascending: false);
+        .order('created_at', ascending: false)
+        .order('article_id', ascending: true);
     List<ArticleData> bookmarkArticles = [];
     for (var article in data) {
       bookmarkArticles.add(ArticleData.fromJson(article));

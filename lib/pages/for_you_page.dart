@@ -262,6 +262,7 @@ class _ForYouPageState extends ConsumerState<ForYouPage> with Pagination {
         .select()
         .overlaps('categories', forYouQueryParams ?? defaultForYouQueryParams)
         .order('created_at', ascending: false)
+        .order('article_id', ascending: true)
         .range(startIndex, endIndex);
   }
 

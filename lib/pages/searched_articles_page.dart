@@ -129,7 +129,8 @@ class _SearchedArticlesPageState extends ConsumerState<SearchedArticlesPage>
           .select()
           .or("title.ilike.%$value%,summary.ilike.%$value%")
           .range(startIndex, endIndex)
-          .order('created_at', ascending: false);
+          .order('created_at', ascending: false)
+          .order('article_id', ascending: true);
 
       if (data.isNotEmpty) {
         for (var value in data) {
@@ -198,7 +199,8 @@ class _SearchedArticlesPageState extends ConsumerState<SearchedArticlesPage>
           .select()
           .or("title.ilike.%$searchTerm%,summary.ilike.%$searchTerm%")
           .range(startIndex, endIndex)
-          .order('created_at', ascending: false);
+          .order('created_at', ascending: false)
+          .order("article_id", ascending: true);
       List<ArticleData> newSearchedData = [];
       if (data.isNotEmpty) {
         for (var value in data) {

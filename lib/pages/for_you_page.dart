@@ -256,7 +256,7 @@ class _ForYouPageState extends ConsumerState<ForYouPage> with Pagination {
     return supabase
         .from('articles')
         .select()
-        .contains('categories', forYouQueryParams ?? defaultForYouQueryParams)
+        .overlaps('categories', forYouQueryParams ?? defaultForYouQueryParams)
         .order('created_at', ascending: false)
         .range(startIndex, endIndex);
   }

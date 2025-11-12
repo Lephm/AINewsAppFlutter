@@ -1,7 +1,6 @@
-image: cirrusci/flutter:latest
+image: ghcr.io/cirruslabs/flutter:3.16.0
 
-variables:
-  FLUTTER_VERSION: "3.22.0"
+
 stages:
   - build
   - deploy

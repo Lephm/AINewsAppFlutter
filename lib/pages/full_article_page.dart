@@ -39,20 +39,16 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
 
   Future<void> loadBookmarkStateStartUp(ArticleData data) async {
     try {
-      if (supabase.auth.currentUser == null) return;
       var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
-        supabase.auth.currentUser!.id,
         data.articleID,
       );
-      var bookmarkCountData = await supabase
-          .from('bookmarks')
-          .select()
-          .eq('article_id', data.articleID)
-          .count(CountOption.exact);
+      var bookmarkCountData = await BookmarkManager.getBookmarkCount(
+        data.articleID,
+      );
       if (mounted) {
         setState(() {
           isBookmarked = articleIsBookmarked;
-          bookmarkCount = bookmarkCountData.count;
+          bookmarkCount = bookmarkCountData;
         });
       }
     } catch (e) {
@@ -100,11 +96,13 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
         await BookmarkManager.removeArticleIdFromBookmark(
           localUser.uid,
           articleData!.articleID,
+          bookmarkCount,
         );
       } else {
         await BookmarkManager.addArticleIdToBookmark(
           localUser.uid,
           articleData!.articleID,
+          bookmarkCount,
         );
       }
       await loadBookmarkState();
@@ -122,18 +120,15 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
       if (supabase.auth.currentUser == null) return;
 
       var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
-        supabase.auth.currentUser!.id,
         articleData!.articleID,
       );
-      var bookmarkCountData = await supabase
-          .from('bookmarks')
-          .select()
-          .eq('article_id', articleData!.articleID)
-          .count(CountOption.exact);
+      var bookmarkCountData = await BookmarkManager.getBookmarkCount(
+        articleData!.articleID,
+      );
       if (mounted) {
         setState(() {
           isBookmarked = articleIsBookmarked;
-          bookmarkCount = bookmarkCountData.count;
+          bookmarkCount = bookmarkCountData;
         });
       }
     } catch (e) {

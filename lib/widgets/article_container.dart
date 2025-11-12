@@ -40,6 +40,7 @@ class _ArticleContainer extends ConsumerState<ArticleContainer>
   Widget build(BuildContext context) {
     var currentTheme = ref.watch(themeProvider);
     loadBookmarkStateStartUp();
+    BookmarkManager.getBookmarkCount(widget.articleData.articleID);
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       padding: EdgeInsetsGeometry.fromLTRB(0, 10, 0, 0),
@@ -269,20 +270,16 @@ class _ArticleContainer extends ConsumerState<ArticleContainer>
   }
 
   Future<void> loadBookmarkStateStartUp() async {
-    if (supabase.auth.currentUser == null) return;
     var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
-      supabase.auth.currentUser!.id,
       widget.articleData.articleID,
     );
-    var bookmarkCountData = await supabase
-        .from('bookmarks')
-        .select()
-        .eq('article_id', widget.articleData.articleID)
-        .count(CountOption.exact);
+    var bookmarkCountData = await BookmarkManager.getBookmarkCount(
+      widget.articleData.articleID,
+    );
     if (mounted) {
       setState(() {
         isBookmarked = articleIsBookmarked;
-        bookmarkCount = bookmarkCountData.count;
+        bookmarkCount = bookmarkCountData;
       });
     }
   }
@@ -300,11 +297,13 @@ class _ArticleContainer extends ConsumerState<ArticleContainer>
         BookmarkManager.removeArticleIdFromBookmark(
           localUser.uid,
           widget.articleData.articleID,
+          bookmarkCount,
         );
       } else {
         BookmarkManager.addArticleIdToBookmark(
           localUser.uid,
           widget.articleData.articleID,
+          bookmarkCount,
         );
       }
       loadBookmarkState();
@@ -321,18 +320,15 @@ class _ArticleContainer extends ConsumerState<ArticleContainer>
         showProgressBar(context, currentTheme);
       }
       var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
-        supabase.auth.currentUser!.id,
         widget.articleData.articleID,
       );
-      var bookmarkCountData = await supabase
-          .from('bookmarks')
-          .select()
-          .eq('article_id', widget.articleData.articleID)
-          .count(CountOption.exact);
+      var bookmarkCountData = await BookmarkManager.getBookmarkCount(
+        widget.articleData.articleID,
+      );
       if (mounted) {
         setState(() {
           isBookmarked = articleIsBookmarked;
-          bookmarkCount = bookmarkCountData.count;
+          bookmarkCount = bookmarkCountData;
         });
       }
     } catch (e) {

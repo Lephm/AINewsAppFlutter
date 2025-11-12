@@ -71,6 +71,7 @@ class MainArticlesNotifier extends Notifier<List<ArticleData>> {
         endIndex,
         queryParams: queryParams,
       );
+
       List<ArticleData> firstTimeLoadingArticlesList = [];
       for (var value in data) {
         firstTimeLoadingArticlesList = [
@@ -103,14 +104,14 @@ class MainArticlesNotifier extends Notifier<List<ArticleData>> {
     if (queryParams.isEmpty) {
       return supabase
           .from('articles')
-          .select()
+          .select(ARTICLESSELECTPARAMETER)
           .order('created_at', ascending: false)
           .order('article_id', ascending: true)
           .range(startIndex, endIndex);
     }
     return supabase
         .from('articles')
-        .select()
+        .select(ARTICLESSELECTPARAMETER)
         .contains('categories', queryParams)
         .order('created_at', ascending: false)
         .order('article_id', ascending: true)

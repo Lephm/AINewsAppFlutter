@@ -11,6 +11,7 @@ import '../models/app_info.dart';
 import '../providers/local_user_provider.dart';
 import '../providers/localization_provider.dart';
 import '../providers/theme_provider.dart';
+import '../utils/article_data_retrieve_helper.dart';
 import '../utils/bookmark_manager.dart';
 import '../utils/pop_up_message.dart';
 import '../widgets/article_label.dart';
@@ -35,7 +36,7 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
   ArticleData? articleData;
   List<ArticleData> relatedArticles = [];
   bool isBookmarked = false;
-  int bookmarkCount = 0;
+  int? bookmarkCount;
 
   Future<void> loadBookmarkStateStartUp(ArticleData data) async {
     try {
@@ -61,7 +62,14 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
     var localUser = ref.watch(userProvider);
     return Row(
       children: [
-        Text(bookmarkCount.toString(), style: currentTheme.textTheme.bodySmall),
+        Text(
+          bookmarkCount == null
+              ? bookmarkCount.toString()
+              : articleData != null
+              ? articleData!.bookmarkCount.toString()
+              : 0.toString(),
+          style: currentTheme.textTheme.bodySmall,
+        ),
         IconButton(
           onPressed: () {
             toggleBookmark();
@@ -96,13 +104,21 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
         await BookmarkManager.removeArticleIdFromBookmark(
           localUser.uid,
           articleData!.articleID,
-          bookmarkCount,
+          (bookmarkCount != null)
+              ? bookmarkCount ?? 0
+              : articleData != null
+              ? articleData!.bookmarkCount
+              : 0,
         );
       } else {
         await BookmarkManager.addArticleIdToBookmark(
           localUser.uid,
           articleData!.articleID,
-          bookmarkCount,
+          (bookmarkCount != null)
+              ? bookmarkCount ?? 0
+              : articleData != null
+              ? articleData!.bookmarkCount
+              : 0,
         );
       }
       await loadBookmarkState();
@@ -429,7 +445,7 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
       articleID = arg as String;
       final data = await supabase
           .from("articles")
-          .select()
+          .select(ARTICLESSELECTPARAMETER)
           .eq("article_id", articleID)
           .single();
       var currentArticleData = ArticleData.fromJson(data);

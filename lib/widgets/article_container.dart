@@ -34,7 +34,7 @@ class _ArticleContainer extends ConsumerState<ArticleContainer>
     with FullScreenOverlayProgressBar {
   bool isBookmarked = false;
   bool cantLoadImage = false;
-  int bookmarkCount = 0;
+  int? bookmarkCount;
 
   @override
   Widget build(BuildContext context) {
@@ -217,7 +217,9 @@ class _ArticleContainer extends ConsumerState<ArticleContainer>
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              bookmarkCount.toString(),
+              bookmarkCount == null
+                  ? widget.articleData.bookmarkCount.toString()
+                  : bookmarkCount.toString(),
               style: currentTheme.textTheme.bodyMedium,
             ),
           ),
@@ -297,13 +299,13 @@ class _ArticleContainer extends ConsumerState<ArticleContainer>
         BookmarkManager.removeArticleIdFromBookmark(
           localUser.uid,
           widget.articleData.articleID,
-          bookmarkCount,
+          bookmarkCount ?? widget.articleData.bookmarkCount,
         );
       } else {
         BookmarkManager.addArticleIdToBookmark(
           localUser.uid,
           widget.articleData.articleID,
-          bookmarkCount,
+          bookmarkCount ?? widget.articleData.bookmarkCount,
         );
       }
       loadBookmarkState();

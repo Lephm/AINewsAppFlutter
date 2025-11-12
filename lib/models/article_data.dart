@@ -23,6 +23,7 @@ class ArticleData {
     required this.date,
     required this.source,
     required this.publisher,
+    required this.bookmarkCount,
   });
 
   ArticleData.fromJson(Map<String, dynamic> json)
@@ -35,6 +36,9 @@ class ArticleData {
       thumbnailUrl = json["thumbnail_url"].toString(),
       date = parseDateToString(json["published_at"].toString()),
       source = json["source"]?.toString() ?? "N/A",
+      bookmarkCount = json["articles_additional_data"] != null
+          ? json["articles_additional_data"]["bookmark_count"] ?? 0
+          : 0,
       publisher = json["publisher"]?.toString() ?? "N/A";
 
   final String articleID;
@@ -46,6 +50,7 @@ class ArticleData {
   final String source;
   final String publisher;
   String date;
+  final int bookmarkCount;
 
   @override
   String toString() {

@@ -126,7 +126,7 @@ class _SearchedArticlesPageState extends ConsumerState<SearchedArticlesPage>
     try {
       var data = await supabase
           .from("articles")
-          .select()
+          .select(ARTICLESSELECTPARAMETER)
           .or("title.ilike.%$value%,summary.ilike.%$value%")
           .range(startIndex, endIndex)
           .order('created_at', ascending: false)
@@ -196,7 +196,7 @@ class _SearchedArticlesPageState extends ConsumerState<SearchedArticlesPage>
     try {
       var data = await supabase
           .from("articles")
-          .select()
+          .select(ARTICLESSELECTPARAMETER)
           .or("title.ilike.%$searchTerm%,summary.ilike.%$searchTerm%")
           .range(startIndex, endIndex)
           .order('created_at', ascending: false)

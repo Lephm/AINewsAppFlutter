@@ -19,3 +19,6 @@ List<ArticleData> getUniqueArticleDatas(
   List<ArticleData> newArticleDatas = [...oldList, ...newDataList];
   return newArticleDatas;
 }
+
+const ARTICLESSELECTPARAMETER =
+    "article_id,title,summary,source,thumbnail_url,categories,trust_level,created_at,published_at,publisher,articles_additional_data(bookmark_count)";

@@ -4,6 +4,8 @@ import 'package:centranews/models/article_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'article_data_retrieve_helper.dart';
+
 final supabase = Supabase.instance.client;
 
 class BookmarkManager {
@@ -77,7 +79,7 @@ class BookmarkManager {
     }
     var data = await supabase
         .from('articles')
-        .select()
+        .select(ARTICLESSELECTPARAMETER)
         .inFilter("article_id", articleIdList)
         .order('created_at', ascending: false)
         .order('article_id', ascending: true);

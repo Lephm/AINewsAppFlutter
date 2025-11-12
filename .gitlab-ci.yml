@@ -2,7 +2,7 @@ image: cirrusci/flutter:stable
   pages:
     stage: deploy
     script:
-      - flutter build web --release
+      - flutter build web --release --base-href="/centralmedia-fe/"
       - mv build/web public
     artifacts:
       paths:

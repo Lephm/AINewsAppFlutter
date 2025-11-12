@@ -34,6 +34,7 @@ class _ArticleContainer extends ConsumerState<ArticleContainer>
     with FullScreenOverlayProgressBar {
   bool isBookmarked = false;
   bool cantLoadImage = false;
+  int bookmarkCount = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -206,9 +207,19 @@ class _ArticleContainer extends ConsumerState<ArticleContainer>
   }
 
   Widget displayShareAndBookmarkButton() {
+    var currentTheme = ref.watch(themeProvider);
     return Container(
       alignment: Alignment.centerRight,
-      child: Row(children: [SizedBox(width: 10), bookmarkButton()]),
+      child: Row(
+        children: [
+          SizedBox(width: 10),
+          Text(
+            bookmarkCount.toString(),
+            style: currentTheme.textTheme.bodyMedium,
+          ),
+          bookmarkButton(),
+        ],
+      ),
     );
   }
 
@@ -254,15 +265,21 @@ class _ArticleContainer extends ConsumerState<ArticleContainer>
     );
   }
 
-  void loadBookmarkStateStartUp() async {
+  Future<void> loadBookmarkStateStartUp() async {
     if (supabase.auth.currentUser == null) return;
     var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
       supabase.auth.currentUser!.id,
       widget.articleData.articleID,
     );
+    var bookmarkCountData = await supabase
+        .from('bookmarks')
+        .select()
+        .eq('article_id', widget.articleData.articleID)
+        .count(CountOption.exact);
     if (mounted) {
       setState(() {
         isBookmarked = articleIsBookmarked;
+        bookmarkCount = bookmarkCountData.count;
       });
     }
   }
@@ -304,9 +321,15 @@ class _ArticleContainer extends ConsumerState<ArticleContainer>
         supabase.auth.currentUser!.id,
         widget.articleData.articleID,
       );
+      var bookmarkCountData = await supabase
+          .from('bookmarks')
+          .select()
+          .eq('article_id', widget.articleData.articleID)
+          .count(CountOption.exact);
       if (mounted) {
         setState(() {
           isBookmarked = articleIsBookmarked;
+          bookmarkCount = bookmarkCountData.count;
         });
       }
     } catch (e) {

@@ -35,36 +35,52 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
   ArticleData? articleData;
   List<ArticleData> relatedArticles = [];
   bool isBookmarked = false;
+  int bookmarkCount = 0;
 
   Future<void> loadBookmarkStateStartUp(ArticleData data) async {
-    if (supabase.auth.currentUser == null) return;
-    var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
-      supabase.auth.currentUser!.id,
-      data.articleID,
-    );
-    if (mounted) {
-      setState(() {
-        isBookmarked = articleIsBookmarked;
-      });
+    try {
+      if (supabase.auth.currentUser == null) return;
+      var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
+        supabase.auth.currentUser!.id,
+        data.articleID,
+      );
+      var bookmarkCountData = await supabase
+          .from('bookmarks')
+          .select()
+          .eq('article_id', data.articleID)
+          .count(CountOption.exact);
+      if (mounted) {
+        setState(() {
+          isBookmarked = articleIsBookmarked;
+          bookmarkCount = bookmarkCountData.count;
+        });
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
   Widget bookmarkButton() {
     var currentTheme = ref.watch(themeProvider);
     var localUser = ref.watch(userProvider);
-    return IconButton(
-      onPressed: () {
-        toggleBookmark();
-      },
-      icon: (isBookmarked && (localUser != null))
-          ? Icon(
-              Icons.bookmark,
-              color: currentTheme.currentColorScheme.bgInverse,
-            )
-          : Icon(
-              Icons.bookmarks_outlined,
-              color: currentTheme.currentColorScheme.bgInverse,
-            ),
+    return Row(
+      children: [
+        Text(bookmarkCount.toString(), style: currentTheme.textTheme.bodySmall),
+        IconButton(
+          onPressed: () {
+            toggleBookmark();
+          },
+          icon: (isBookmarked && (localUser != null))
+              ? Icon(
+                  Icons.bookmark,
+                  color: currentTheme.currentColorScheme.bgInverse,
+                )
+              : Icon(
+                  Icons.bookmarks_outlined,
+                  color: currentTheme.currentColorScheme.bgInverse,
+                ),
+        ),
+      ],
     );
   }
 
@@ -109,9 +125,15 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
         supabase.auth.currentUser!.id,
         articleData!.articleID,
       );
+      var bookmarkCountData = await supabase
+          .from('bookmarks')
+          .select()
+          .eq('article_id', articleData!.articleID)
+          .count(CountOption.exact);
       if (mounted) {
         setState(() {
           isBookmarked = articleIsBookmarked;
+          bookmarkCount = bookmarkCountData.count;
         });
       }
     } catch (e) {
@@ -417,9 +439,11 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
           .single();
       var currentArticleData = ArticleData.fromJson(data);
       await loadBookmarkStateStartUp(currentArticleData);
-      setState(() {
-        articleData = currentArticleData;
-      });
+      if (mounted) {
+        setState(() {
+          articleData = currentArticleData;
+        });
+      }
     } catch (e) {
       debugPrint(e.toString());
     } finally {

@@ -1,5 +1,4 @@
 import 'package:centranews/models/article_data.dart';
-import 'package:centranews/providers/local_user_provider.dart';
 import 'package:centranews/providers/localization_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
 import 'package:centranews/utils/bookmark_manager.dart';
@@ -7,6 +6,7 @@ import 'package:centranews/utils/custom_navigator_settings.dart';
 import 'package:centranews/utils/format_string_helper.dart';
 import 'package:centranews/utils/pop_up_message.dart';
 import 'package:centranews/widgets/article_label.dart';
+import 'package:centranews/widgets/bookmark_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,19 +30,13 @@ class ArticleContainer extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _ArticleContainer();
 }
 
-class _ArticleContainer extends ConsumerState<ArticleContainer>
-    with FullScreenOverlayProgressBar {
-  bool isBookmarked = false;
+class _ArticleContainer extends ConsumerState<ArticleContainer> {
   bool cantLoadImage = false;
-  int? bookmarkCount;
-  bool hasLoadInitialAdditionArticleData = false;
 
   @override
   Widget build(BuildContext context) {
     var currentTheme = ref.watch(themeProvider);
-    if (!hasLoadInitialAdditionArticleData) {
-      loadBookmarkStateStartUp();
-    }
+
     BookmarkManager.getBookmarkCount(widget.articleData.articleID);
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
@@ -211,22 +205,15 @@ class _ArticleContainer extends ConsumerState<ArticleContainer>
   }
 
   Widget displayShareAndBookmarkButton() {
-    var currentTheme = ref.watch(themeProvider);
     return Container(
       alignment: Alignment.centerRight,
       child: Row(
         children: [
           SizedBox(width: 10),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              bookmarkCount == null
-                  ? widget.articleData.bookmarkCount.toString()
-                  : bookmarkCount.toString(),
-              style: currentTheme.textTheme.bodyMedium,
-            ),
+          BookmarkButton(
+            parentBookmarkCount: widget.articleData.bookmarkCount,
+            articleID: widget.articleData.articleID,
           ),
-          bookmarkButton(),
         ],
       ),
     );
@@ -253,96 +240,6 @@ class _ArticleContainer extends ConsumerState<ArticleContainer>
       },
       icon: Icon(Icons.share, color: currentTheme.currentColorScheme.bgInverse),
     );
-  }
-
-  Widget bookmarkButton() {
-    var currentTheme = ref.watch(themeProvider);
-    var localUser = ref.watch(userProvider);
-    return IconButton(
-      onPressed: () {
-        toggleBookmark();
-      },
-      icon: (isBookmarked && (localUser != null))
-          ? Icon(
-              Icons.bookmark,
-              color: currentTheme.currentColorScheme.bgInverse,
-            )
-          : Icon(
-              Icons.bookmarks_outlined,
-              color: currentTheme.currentColorScheme.bgInverse,
-            ),
-    );
-  }
-
-  Future<void> loadBookmarkStateStartUp() async {
-    var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
-      widget.articleData.articleID,
-    );
-    var bookmarkCountData = await BookmarkManager.getBookmarkCount(
-      widget.articleData.articleID,
-    );
-    if (mounted) {
-      setState(() {
-        isBookmarked = articleIsBookmarked;
-        bookmarkCount = bookmarkCountData;
-        hasLoadInitialAdditionArticleData = true;
-      });
-    }
-  }
-
-  void toggleBookmark() async {
-    var currentTheme = ref.watch(themeProvider);
-    var localization = ref.watch(localizationProvider);
-    var localUser = ref.watch(userProvider);
-    if (localUser == null) {
-      showSignInPrompt(context, currentTheme, localization);
-      return;
-    }
-    try {
-      if (mounted) {
-        showProgressBar(context, currentTheme);
-      }
-      if (isBookmarked) {
-        await BookmarkManager.removeArticleIdFromBookmark(
-          localUser.uid,
-          widget.articleData.articleID,
-          bookmarkCount ?? widget.articleData.bookmarkCount,
-        );
-      } else {
-        await BookmarkManager.addArticleIdToBookmark(
-          localUser.uid,
-          widget.articleData.articleID,
-          bookmarkCount ?? widget.articleData.bookmarkCount,
-        );
-      }
-      await loadBookmarkState();
-    } catch (e) {
-      debugPrint(e.toString());
-    } finally {
-      if (mounted) {
-        closeProgressBar(context);
-      }
-    }
-  }
-
-  Future<void> loadBookmarkState() async {
-    try {
-      if (supabase.auth.currentUser == null) return;
-      var articleIsBookmarked = await BookmarkManager.isArticleBookmarked(
-        widget.articleData.articleID,
-      );
-      var bookmarkCountData = await BookmarkManager.getBookmarkCount(
-        widget.articleData.articleID,
-      );
-      if (mounted) {
-        setState(() {
-          isBookmarked = articleIsBookmarked;
-          bookmarkCount = bookmarkCountData;
-        });
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-    }
   }
 
   Widget displaySecondaryLabels() {

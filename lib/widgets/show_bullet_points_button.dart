@@ -36,7 +36,6 @@ class ShowBulletPointsButton extends ConsumerWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          constraints: BoxConstraints(maxHeight: 600, maxWidth: 300),
           scrollable: true,
           iconPadding: EdgeInsetsGeometry.fromLTRB(10, 10, 10, 0),
           icon: Align(

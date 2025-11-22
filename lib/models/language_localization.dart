@@ -79,6 +79,7 @@ class LanguageLocalizationTexts {
     required this.gettingStarted,
     required this.skip,
     required this.forYou,
+    required this.summarizeTextPrompt,
   });
 
   final String signIn;
@@ -131,6 +132,7 @@ class LanguageLocalizationTexts {
   final String gettingStarted;
   final String skip;
   final String forYou;
+  final String summarizeTextPrompt;
 
   //Categories label
   final String politics;
@@ -280,6 +282,7 @@ var engLocalization = const LanguageLocalizationTexts(
   gettingStarted: "Getting Started",
   skip: "Skip",
   forYou: "For You",
+  summarizeTextPrompt: "Summary",
 );
 
 var vietLocalization = const LanguageLocalizationTexts(
@@ -361,4 +364,5 @@ var vietLocalization = const LanguageLocalizationTexts(
   gettingStarted: "Bắt đầu",
   skip: "Bỏ qua",
   forYou: "Cho bạn",
+  summarizeTextPrompt: "Tóm tắt",
 );

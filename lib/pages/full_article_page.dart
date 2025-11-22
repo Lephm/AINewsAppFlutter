@@ -3,6 +3,7 @@ import 'package:centranews/utils/format_string_helper.dart';
 import 'package:centranews/utils/full_screen_overlay_progress_bar.dart';
 import 'package:centranews/widgets/article_container.dart';
 import 'package:centranews/widgets/bookmark_button.dart';
+import 'package:centranews/widgets/show_bullet_points_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -54,6 +55,12 @@ class _FullArticlePageState extends ConsumerState<FullArticlePage>
             },
           ),
           actions: [
+            (_isLoading || articleData == null)
+                ? SizedBox.shrink()
+                : ShowBulletPointsButton(
+                    size: 20,
+                    bulletPoints: articleData!.bulletPoints,
+                  ),
             (_isLoading || articleData == null)
                 ? SizedBox.shrink()
                 : BookmarkButton(

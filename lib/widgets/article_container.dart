@@ -7,6 +7,7 @@ import 'package:centranews/utils/format_string_helper.dart';
 import 'package:centranews/utils/pop_up_message.dart';
 import 'package:centranews/widgets/article_label.dart';
 import 'package:centranews/widgets/bookmark_button.dart';
+import 'package:centranews/widgets/show_bullet_points_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -198,17 +199,20 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
             ),
           ),
         ),
-        displayShareAndBookmarkButton(),
+        displayExtraButtons(),
       ],
     );
   }
 
-  Widget displayShareAndBookmarkButton() {
+  Widget displayExtraButtons() {
     return Container(
       alignment: Alignment.centerRight,
       child: Row(
         children: [
-          SizedBox(width: 10),
+          ShowBulletPointsButton(
+            size: 25,
+            bulletPoints: widget.articleData.bulletPoints,
+          ),
           BookmarkButton(
             parentBookmarkCount: widget.articleData.bookmarkCount,
             articleID: widget.articleData.articleID,
@@ -219,27 +223,27 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
   }
 
   //TODO: implement this and add it to displayShareAndBookMarkButton
-  Widget shareButton() {
-    var currentTheme = ref.watch(themeProvider);
-    var localization = ref.watch(localizationProvider);
-    return IconButton(
-      onPressed: () async {
-        final articleId = widget.articleData.articleID;
-        final linkToCopied =
-            "${CustomNavigatorSettings.domainName}/#/full_article/$articleId";
-        await Clipboard.setData(ClipboardData(text: linkToCopied));
-
-        if (mounted) {
-          showAlertMessage(
-            context,
-            localization.copiedSucessfully,
-            currentTheme,
-          );
-        }
-      },
-      icon: Icon(Icons.share, color: currentTheme.currentColorScheme.bgInverse),
-    );
-  }
+  // Widget shareButton() {
+  //   var currentTheme = ref.watch(themeProvider);
+  //   var localization = ref.watch(localizationProvider);
+  //   return IconButton(
+  //     onPressed: () async {
+  //       final articleId = widget.articleData.articleID;
+  //       final linkToCopied =
+  //           "${CustomNavigatorSettings.domainName}/#/full_article/$articleId";
+  //       await Clipboard.setData(ClipboardData(text: linkToCopied));
+  //
+  //       if (mounted) {
+  //         showAlertMessage(
+  //           context,
+  //           localization.copiedSucessfully,
+  //           currentTheme,
+  //         );
+  //       }
+  //     },
+  //     icon: Icon(Icons.share, color: currentTheme.currentColorScheme.bgInverse),
+  //   );
+  // }
 
   Widget displaySecondaryLabels() {
     var currentTheme = ref.watch(themeProvider);
@@ -380,31 +384,22 @@ class _ArticleContainer extends ConsumerState<ArticleContainer> {
       builder: (context) => AlertDialog(
         backgroundColor: currentTheme.currentColorScheme.bgPrimary,
 
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            BackButton(
-              color: currentTheme.currentColorScheme.bgInverse,
-              style: ButtonStyle(alignment: Alignment(-1.0, -1.0)),
-            ),
-            TextButton(
-              onPressed: () async {
-                try {
-                  await launchUrl(Uri.parse(widget.articleData.source));
-                } catch (e) {
-                  debugPrint(e.toString());
-                }
-              },
-              child: Icon(
-                Icons.link,
-                color: currentTheme.currentColorScheme.bgInverse,
-              ),
-            ),
-          ],
+        title: BackButton(
+          color: currentTheme.currentColorScheme.bgInverse,
+          style: ButtonStyle(alignment: Alignment(-1.0, -1.0)),
         ),
-        content: Text(
-          widget.articleData.source,
-          style: currentTheme.textTheme.bodyMedium,
+        content: TextButton(
+          onPressed: () async {
+            try {
+              await launchUrl(Uri.parse(widget.articleData.source));
+            } catch (e) {
+              debugPrint(e.toString());
+            }
+          },
+          child: Text(
+            widget.articleData.source,
+            style: currentTheme.textTheme.bodyMedium,
+          ),
         ),
       ),
     );

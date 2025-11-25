@@ -2,19 +2,18 @@ import 'dart:math';
 
 import 'package:centranews/utils/article_data_retrieve_helper.dart';
 import 'package:centranews/utils/pagination.dart';
+import 'package:centranews/widgets/article_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/article_data.dart';
 import '../providers/theme_provider.dart';
 import '../utils/categories_list.dart';
-import '../widgets/article_container.dart';
 
 final supabase = Supabase.instance.client;
 
 const List<String> defaultForYouQueryParams = ["Politics"];
 
-//TODO: implement this discover page using different algorithm
 class ForYouPage extends ConsumerStatefulWidget {
   const ForYouPage({super.key});
 
@@ -26,7 +25,7 @@ class _ForYouPageState extends ConsumerState<ForYouPage> with Pagination {
   static bool hasLoadCurrentUserPreferedCategory = false;
   List<ArticleData> forYouArticles = [];
   final ScrollController scrollController = ScrollController();
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   List<String>? forYouQueryParams;
   bool hasFinishedLoadingForTheFirstTime = false;
@@ -45,7 +44,16 @@ class _ForYouPageState extends ConsumerState<ForYouPage> with Pagination {
             forYouArticles.isEmpty ||
             !hasFinishedLoadingForTheFirstTime)
         ? displayCircularProgressBar(currentTheme)
-        : forYouPage();
+        : ArticleList(
+            refreshIndicatorKey: refreshIndicatorKey,
+            onRefreshCallback: refreshForYouArticles,
+            pageGridDelegate: pageGridDelegate,
+            scrollController: scrollController,
+            articleList: forYouArticles,
+            shouldShowCircularProgressBar: () =>
+                forYouArticles.isEmpty && isLoading,
+            isLoading: isLoading,
+          );
   }
 
   Future<void> loadForYouQueryParams() async {
@@ -144,55 +152,6 @@ class _ForYouPageState extends ConsumerState<ForYouPage> with Pagination {
         }
       }
     });
-  }
-
-  Widget forYouPage() {
-    var currentTheme = ref.watch(themeProvider);
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: RefreshIndicator(
-              key: _refreshIndicatorKey,
-              backgroundColor: currentTheme.currentColorScheme.bgPrimary,
-              color: currentTheme.currentColorScheme.bgInverse,
-              onRefresh: () async {
-                refreshForYouArticles();
-              },
-
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 1200),
-                child: GridView.builder(
-                  gridDelegate: pageGridDelegate,
-                  controller: scrollController,
-                  physics: BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics(),
-                  ),
-                  padding: pageEdgeInset,
-                  itemCount: forYouArticles.length + (isLoading ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    try {
-                      if (index == forYouArticles.length) {
-                        if (forYouArticles.isEmpty && isLoading) {
-                          return displayCircularProgressBar(currentTheme);
-                        }
-                      }
-                      return ArticleContainer(
-                        articleData: forYouArticles[index],
-                        key: ValueKey(forYouArticles[index].articleID),
-                      );
-                    } catch (e) {
-                      return displayCircularProgressBar(currentTheme);
-                    }
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   @override

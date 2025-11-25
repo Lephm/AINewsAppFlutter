@@ -4,12 +4,12 @@ import 'package:centranews/providers/localization_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
 import 'package:centranews/utils/article_data_retrieve_helper.dart';
 import 'package:centranews/utils/bookmark_manager.dart';
+import 'package:centranews/widgets/article_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../utils/pagination.dart';
-import '../widgets/article_container.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -23,7 +23,7 @@ class BookmarksPage extends ConsumerStatefulWidget {
 class _BookmarksPageState extends ConsumerState<BookmarksPage> with Pagination {
   List<ArticleData> bookmarkArticles = [];
   final ScrollController scrollController = ScrollController();
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
   @override
@@ -39,7 +39,18 @@ class _BookmarksPageState extends ConsumerState<BookmarksPage> with Pagination {
     if (localUser != null && !isLoading && bookmarkArticles.isEmpty) {
       return displayYouDoNotHaveAnyBookmarks();
     }
-    return localUser == null ? notLoginPrompt() : bookmarkPage();
+    return localUser == null
+        ? notLoginPrompt()
+        : ArticleList(
+            refreshIndicatorKey: refreshIndicatorKey,
+            onRefreshCallback: onRefresh,
+            pageGridDelegate: pageGridDelegate,
+            scrollController: scrollController,
+            articleList: bookmarkArticles,
+            shouldShowCircularProgressBar: () =>
+                bookmarkArticles.isEmpty && isLoading,
+            isLoading: isLoading,
+          );
   }
 
   Widget notLoginPrompt() {
@@ -66,55 +77,6 @@ class _BookmarksPageState extends ConsumerState<BookmarksPage> with Pagination {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget bookmarkPage() {
-    var currentTheme = ref.watch(themeProvider);
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: RefreshIndicator(
-              key: _refreshIndicatorKey,
-              backgroundColor: currentTheme.currentColorScheme.bgPrimary,
-              color: currentTheme.currentColorScheme.bgInverse,
-              onRefresh: () async {
-                onRefresh();
-              },
-
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 1200),
-                child: GridView.builder(
-                  gridDelegate: pageGridDelegate,
-                  controller: scrollController,
-                  physics: BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics(),
-                  ),
-                  padding: pageEdgeInset,
-                  itemCount: bookmarkArticles.length + (isLoading ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    try {
-                      if (index == bookmarkArticles.length) {
-                        if (bookmarkArticles.isEmpty && isLoading) {
-                          return displayCircularProgressBar(currentTheme);
-                        }
-                      }
-                      return ArticleContainer(
-                        articleData: bookmarkArticles[index],
-                        key: ValueKey(bookmarkArticles[index].articleID),
-                      );
-                    } catch (e) {
-                      return displayCircularProgressBar(currentTheme);
-                    }
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

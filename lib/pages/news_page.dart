@@ -3,9 +3,10 @@ import 'package:centranews/providers/main_articles_provider.dart';
 import 'package:centranews/providers/query_categories_provider.dart';
 import 'package:centranews/providers/theme_provider.dart';
 import 'package:centranews/utils/pagination.dart';
-import 'package:centranews/widgets/article_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../widgets/article_list.dart';
 
 const numberOfArticlesBeforeShowingBannerAd = 1;
 
@@ -17,7 +18,7 @@ class NewsPage extends ConsumerStatefulWidget {
 }
 
 class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   final ScrollController scrollController = ScrollController();
   bool hasFetchDataForTheFirstTime = false;
@@ -35,67 +36,27 @@ class _NewsPageState extends ConsumerState<NewsPage> with Pagination {
     if (mounted && !hasFetchDataForTheFirstTime) {
       fetchDataForFirstTime();
     }
+    var queryCategories = ref.watch(queryCategoriesProvider);
+    var mainArticles = ref.watch(mainArticlesProvider);
     return cantFindRelevantArticles()
         ? displayCantFindRelevantArticles()
         : (isRefreshing && !hasFetchDataForTheFirstTime)
         ? displayCircularProgressBar(currentTheme)
-        : displayArticles();
+        : ArticleList(
+            refreshIndicatorKey: refreshIndicatorKey,
+            onRefreshCallback: refreshData,
+            pageGridDelegate: pageGridDelegate,
+            scrollController: scrollController,
+            articleList: mainArticles,
+            shouldShowCircularProgressBar: () =>
+                queryCategories.isEmpty && isLoading,
+            isLoading: isLoading,
+          );
   }
 
   @override
   void dispose() {
     super.dispose();
-  }
-
-  Widget displayArticles() {
-    var mainArticles = ref.watch(mainArticlesProvider);
-    var currentTheme = ref.watch(themeProvider);
-    var queryCategories = ref.watch(queryCategoriesProvider);
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: RefreshIndicator(
-              key: _refreshIndicatorKey,
-              backgroundColor: currentTheme.currentColorScheme.bgPrimary,
-              color: currentTheme.currentColorScheme.bgInverse,
-              onRefresh: () async {
-                refreshData();
-              },
-
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 1200),
-                child: GridView.builder(
-                  gridDelegate: pageGridDelegate,
-                  controller: scrollController,
-                  physics: BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics(),
-                  ),
-                  padding: pageEdgeInset,
-                  itemCount: mainArticles.length + (isLoading ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    try {
-                      if (index == mainArticles.length) {
-                        if (queryCategories.isEmpty && isLoading) {
-                          return displayCircularProgressBar(currentTheme);
-                        }
-                      }
-                      return ArticleContainer(
-                        articleData: mainArticles[index],
-                        key: ValueKey(mainArticles[index].articleID),
-                      );
-                    } catch (e) {
-                      return displayCircularProgressBar(currentTheme);
-                    }
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   bool cantFindRelevantArticles() {

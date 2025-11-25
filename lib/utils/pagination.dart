@@ -15,8 +15,6 @@ mixin Pagination {
   );
   static const double almostTheEndOfPagePercent = 0.9;
 
-  EdgeInsets pageEdgeInset = EdgeInsets.symmetric(horizontal: 15, vertical: 5);
-
   int get startIndex {
     return currentPage * _itemsPerPage;
   }

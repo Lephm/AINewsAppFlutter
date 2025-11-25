@@ -1,5 +1,6 @@
 import 'package:centranews/utils/article_data_retrieve_helper.dart';
 import 'package:centranews/utils/pagination.dart';
+import 'package:centranews/widgets/article_list.dart';
 import 'package:centranews/widgets/custom_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +9,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/article_data.dart';
 import '../providers/localization_provider.dart';
 import '../providers/theme_provider.dart';
-import '../widgets/article_container.dart';
 import '../widgets/custom_safe_area.dart';
 
 final supabase = Supabase.instance.client;
@@ -26,6 +26,8 @@ class _SearchedArticlesPageState extends ConsumerState<SearchedArticlesPage>
   final ScrollController scrollController = ScrollController();
   String searchTerm = "";
   List<ArticleData> searchedArticles = [];
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,16 @@ class _SearchedArticlesPageState extends ConsumerState<SearchedArticlesPage>
             ? displayPleaseEnterSearchTerm()
             : cantFindRelatedArticles()
             ? displayCantFindRelevantArticles()
-            : displayArticles(),
+            : ArticleList(
+                refreshIndicatorKey: refreshIndicatorKey,
+                onRefreshCallback: () {},
+                pageGridDelegate: pageGridDelegate,
+                scrollController: scrollController,
+                articleList: searchedArticles,
+                shouldShowCircularProgressBar: () =>
+                    searchedArticles.isEmpty && isLoading,
+                isLoading: isLoading,
+              ),
       ),
     );
   }
@@ -78,41 +89,6 @@ class _SearchedArticlesPageState extends ConsumerState<SearchedArticlesPage>
       child: Text(
         localization.pleaseEnterSearchTerm,
         style: currentTheme.textTheme.bodyMediumBold,
-      ),
-    );
-  }
-
-  Widget displayArticles() {
-    var currentTheme = ref.watch(themeProvider);
-    return Center(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 1200),
-          child: GridView.builder(
-            gridDelegate: pageGridDelegate,
-            controller: scrollController,
-            physics: BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics(),
-            ),
-            padding: pageEdgeInset,
-            itemCount: searchedArticles.length + (isLoading ? 1 : 0),
-            itemBuilder: (context, index) {
-              try {
-                if (index == searchedArticles.length) {
-                  if (searchedArticles.isEmpty && isLoading) {
-                    return displayCircularProgressBar(currentTheme);
-                  }
-                }
-                return ArticleContainer(
-                  articleData: searchedArticles[index],
-                  key: ValueKey(searchedArticles[index].articleID),
-                );
-              } catch (e) {
-                return displayCircularProgressBar(currentTheme);
-              }
-            },
-          ),
-        ),
       ),
     );
   }
